@@ -13,10 +13,14 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +45,7 @@ import com.mobfox.android.MobfoxSDK;
 import com.mobfox.android.MobfoxSDK.*;
 
 // added for MoPub
+import com.mobfox.android.core.MFXStorage;
 import com.mobfox.android.core.gdpr.GDPRParams;
 import com.mobfox.sdk.adapters.MoPubUtils;
 import com.mopub.common.MoPub;
@@ -68,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
     private ImageView iconNative, mainNative;
     private TextView titleNative, descNative, ratingNative, sponsoredNative;
     private Button ctaNative;
+
+    private CheckBox        btnUseLiveAds;
+    private CheckBox        btnPicsartMode;
 
     private Button          btnBannerSmall;
     private Button          btnBannerLarge;
@@ -110,11 +118,13 @@ public class MainActivity extends AppCompatActivity {
         // AdMob SDK init:
         initAdMobSDK();
 
+        initConfigButtons();
+
         initBannerButtons();
 
-        initInterstitial();
+        initInterstitialButtons();
 
-        initNative();
+        initNativeButtons();
 
         initTabs();
 
@@ -157,6 +167,15 @@ public class MainActivity extends AppCompatActivity {
         clearAllAds();
 
         MobfoxSDK.onDestroy(this);
+    }
+
+    //===========================================================================================
+
+    private void ShowToast(String text)
+    {
+        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER,0,0);
+        toast.show();
     }
 
     //===========================================================================================
@@ -260,13 +279,43 @@ public class MainActivity extends AppCompatActivity {
 
     //===========================================================================================
 
+    private void initConfigButtons()
+    {
+        btnUseLiveAds = (CheckBox)findViewById(R.id.btnUseLiveAds);
+        btnUseLiveAds.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                MFXStorage.sharedInstance(MainActivity.this).setPrefBool("MFX4Demo_use_live_ads",isChecked);
+                UpdateConfigButtons();
+            }
+        });
+
+        btnPicsartMode = (CheckBox)findViewById(R.id.btnPicsartMode);
+        btnPicsartMode.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                MFXStorage.sharedInstance(MainActivity.this).setPrefBool("MFX4Demo_do_like_picsart",isChecked);
+                UpdateConfigButtons();
+            }
+        });
+        UpdateConfigButtons();
+    }
+
+    private void UpdateConfigButtons()
+    {
+        btnUseLiveAds.setChecked(MFXStorage.sharedInstance(this).getPrefBool("MFX4Demo_use_live_ads",false));
+        btnPicsartMode.setChecked(MFXStorage.sharedInstance(this).getPrefBool("MFX4Demo_do_like_picsart",false));
+    }
+
+    //===========================================================================================
+
     private void initBannerButtons()
     {
         btnBannerSmall = (Button)findViewById(R.id.btnBannerSmall);
         btnBannerSmall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"Loading banner...",Toast.LENGTH_SHORT).show();
+                ShowToast("Loading banner...");
 
                 switch (mAdapterType)
                 {
@@ -287,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
         btnBannerLarge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"Loading banner...",Toast.LENGTH_SHORT).show();
+                ShowToast("Loading banner...");
 
                 switch (mAdapterType)
                 {
@@ -308,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
         btnBannerVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"Loading banner...",Toast.LENGTH_SHORT).show();
+                ShowToast("Loading banner...");
 
                 switch (mAdapterType)
                 {
@@ -328,13 +377,13 @@ public class MainActivity extends AppCompatActivity {
 
     //===========================================================================================
 
-    private void initInterstitial()
+    private void initInterstitialButtons()
     {
         btnInterstitialHtml = (Button)findViewById(R.id.btnInterstitialHtml);
         btnInterstitialHtml.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"Loading interstitial...",Toast.LENGTH_SHORT).show();
+                ShowToast("Loading interstitial...");
 
                 switch (mAdapterType)
                 {
@@ -355,7 +404,7 @@ public class MainActivity extends AppCompatActivity {
         btnInterstitialVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"Loading interstitial...",Toast.LENGTH_SHORT).show();
+                ShowToast("Loading interstitial...");
 
                 switch (mAdapterType)
                 {
@@ -375,7 +424,7 @@ public class MainActivity extends AppCompatActivity {
 
     //===========================================================================================
 
-    private void initNative()
+    private void initNativeButtons()
     {
         linNative         = findViewById(R.id.linNative);
         iconNative        = findViewById(R.id.iconNative);
@@ -400,7 +449,7 @@ public class MainActivity extends AppCompatActivity {
         btnNative.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"Loading native...",Toast.LENGTH_SHORT).show();
+                ShowToast("Loading native...");
 
                 switch (mAdapterType)
                 {
@@ -432,9 +481,67 @@ public class MainActivity extends AppCompatActivity {
     public static final String MOBFOX_HASH_INTER_VIDEO  = "80187188f458cfde788d961b6882fd53";
     public static final String MOBFOX_HASH_NATIVE       = "a764347547748896b84e0b8ccd90fd62";
 
+    public static final String MOBFOX_LIVE_HASH_BANNER_HTML  = "fc57543a03d1a12362211f2a5771dbe6";
+    public static final String MOBFOX_LIVE_HASH_BANNER_VIDEO = "e40be240fb5ae46b55ae0688242b5ff4";
+    public static final String MOBFOX_LIVE_HASH_INTER_HTML   = "35eba51287132447b5a18a764ea3e678";
+    public static final String MOBFOX_LIVE_HASH_INTER_VIDEO  = "741e400adbb54e13d772067aae1107fd";
+    public static final String MOBFOX_LIVE_HASH_NATIVE       = "d22bf35c596809155ec8520d283a9b09";
+
     private MFXBanner       mMFXBannerAd       = null;
     private MFXInterstitial mMFXInterstitialAd = null;
     private MFXNative       mMFXNativeAd       = null;
+
+    //===========================================================================================
+
+    private String MobfoxHashBannerHtml()
+    {
+        if (!MFXStorage.sharedInstance(this).getPrefBool("MFX4Demo_use_live_ads",false))
+        {
+            return MOBFOX_HASH_BANNER_HTML;
+        } else {
+            return MOBFOX_LIVE_HASH_BANNER_HTML;
+        }
+    }
+
+    private String MobfoxHashBannerVideo()
+    {
+        if (!MFXStorage.sharedInstance(this).getPrefBool("MFX4Demo_use_live_ads",false))
+        {
+            return MOBFOX_HASH_BANNER_VIDEO;
+        } else {
+            return MOBFOX_LIVE_HASH_BANNER_VIDEO;
+        }
+    }
+
+    private String MobfoxHashInterHtml()
+    {
+        if (!MFXStorage.sharedInstance(this).getPrefBool("MFX4Demo_use_live_ads",false))
+        {
+            return MOBFOX_HASH_INTER_HTML;
+        } else {
+            return MOBFOX_LIVE_HASH_INTER_HTML;
+        }
+    }
+
+    private String MobfoxHashInterVideo()
+    {
+        if (!MFXStorage.sharedInstance(this).getPrefBool("MFX4Demo_use_live_ads",false))
+        {
+            return MOBFOX_HASH_INTER_VIDEO;
+        } else {
+            return MOBFOX_LIVE_HASH_INTER_VIDEO;
+        }
+    }
+
+    private String MobfoxHashNative()
+    {
+        if (!MFXStorage.sharedInstance(this).getPrefBool("MFX4Demo_use_live_ads",false))
+        {
+            return MOBFOX_HASH_NATIVE;
+        } else {
+            return MOBFOX_LIVE_HASH_NATIVE;
+        }
+    }
 
     //===========================================================================================
 
@@ -442,6 +549,7 @@ public class MainActivity extends AppCompatActivity {
     {
         MobfoxSDK.init(this);
 
+        /*
         MobfoxSDK.setGDPR(true);
         MobfoxSDK.setGDPRConsentString(GDPRParams.GDPR_DEFAULT_MOBFOX_CONSENT_STRING);
 
@@ -450,6 +558,7 @@ public class MainActivity extends AppCompatActivity {
         MobfoxSDK.setDemoKeywords("basketball,tennis");
         MobfoxSDK.setLatitude(32.455666);
         MobfoxSDK.setLongitude(32.455666);
+        */
     }
 
     //===========================================================================================
@@ -458,7 +567,7 @@ public class MainActivity extends AppCompatActivity {
     {
         clearAllAds();
 
-        mMFXBannerAd = MobfoxSDK.createBanner(MainActivity.this,320,50, MOBFOX_HASH_BANNER_HTML,bannerListener);
+        mMFXBannerAd = MobfoxSDK.createBanner(MainActivity.this,320,50, MobfoxHashBannerHtml(),bannerListener);
         MobfoxSDK.setBannerFloorPrice(mMFXBannerAd,0.036f);
         MobfoxSDK.loadBanner(mMFXBannerAd);
     }
@@ -467,7 +576,7 @@ public class MainActivity extends AppCompatActivity {
     {
         clearAllAds();
 
-        mMFXBannerAd = MobfoxSDK.createBanner(MainActivity.this,300,250, MOBFOX_HASH_BANNER_HTML,bannerListener);
+        mMFXBannerAd = MobfoxSDK.createBanner(MainActivity.this,300,250, MobfoxHashBannerHtml(),bannerListener);
         MobfoxSDK.loadBanner(mMFXBannerAd);
     }
 
@@ -475,7 +584,7 @@ public class MainActivity extends AppCompatActivity {
     {
         clearAllAds();
 
-        mMFXBannerAd = MobfoxSDK.createBanner(MainActivity.this,300,250, MOBFOX_HASH_BANNER_VIDEO,bannerListener);
+        mMFXBannerAd = MobfoxSDK.createBanner(MainActivity.this,300,250, MobfoxHashBannerVideo(),bannerListener);
         MobfoxSDK.loadBanner(mMFXBannerAd);
     }
 
@@ -497,34 +606,34 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBannerLoadFailed(MFXBanner banner, String code) {
-            Toast.makeText(MainActivity.this,"onBannerLoadFailed: "+code,Toast.LENGTH_SHORT).show();
+            ShowToast("onBannerLoadFailed: "+code);
         }
 
         @Override
         public void onBannerLoaded(MFXBanner banner) {
-            Toast.makeText(MainActivity.this,"onBannerLoaded",Toast.LENGTH_SHORT).show();
+            ShowToast("onBannerLoaded");
 
             MobfoxSDK.addBannerViewTo(banner, relBanner);
         }
 
         @Override
         public void onBannerShown(MFXBanner banner) {
-            Toast.makeText(MainActivity.this,"onBannerShown",Toast.LENGTH_SHORT).show();
+            ShowToast("onBannerShown");
         }
 
         @Override
         public void onBannerClosed(MFXBanner banner) {
-            Toast.makeText(MainActivity.this,"onBannerClosed",Toast.LENGTH_SHORT).show();
+            ShowToast("onBannerClosed");
         }
 
         @Override
         public void onBannerFinished(MFXBanner banner) {
-            Toast.makeText(MainActivity.this,"onBannerFinished",Toast.LENGTH_SHORT).show();
+            ShowToast("onBannerFinished");
         }
 
         @Override
         public void onBannerClicked(MFXBanner banner, String url) {
-            Toast.makeText(MainActivity.this,"onBannerClicked",Toast.LENGTH_SHORT).show();
+            ShowToast("onBannerClicked");
         }
     };
 
@@ -535,7 +644,7 @@ public class MainActivity extends AppCompatActivity {
         clearAllAds();
 
         mMFXInterstitialAd = MobfoxSDK.createInterstitial(MainActivity.this,
-                MOBFOX_HASH_INTER_HTML,
+                MobfoxHashInterHtml(),
                 interstitialListener);
         MobfoxSDK.loadInterstitial(mMFXInterstitialAd);
     }
@@ -545,7 +654,7 @@ public class MainActivity extends AppCompatActivity {
         clearAllAds();
 
         mMFXInterstitialAd = MobfoxSDK.createInterstitial(MainActivity.this,
-                MOBFOX_HASH_INTER_VIDEO,
+                MobfoxHashInterVideo(),
                 interstitialListener);
         MobfoxSDK.loadInterstitial(mMFXInterstitialAd);
     }
@@ -564,36 +673,36 @@ public class MainActivity extends AppCompatActivity {
     private MFXInterstitialListener interstitialListener = new MFXInterstitialListener() {
         @Override
         public void onInterstitialLoaded(MFXInterstitial interstitial) {
-            Toast.makeText(MainActivity.this,"onInterstitialLoaded",Toast.LENGTH_SHORT).show();
+            ShowToast("onInterstitialLoaded");
 
             MobfoxSDK.showInterstitial(mMFXInterstitialAd);
         }
 
         @Override
         public void onInterstitialLoadFailed(MFXInterstitial interstitial, String code) {
-            Toast.makeText(MainActivity.this,"onInterstitialLoadFailed: "+code,Toast.LENGTH_SHORT).show();
+            ShowToast("onInterstitialLoadFailed: "+code);
         }
 
         @Override
         public void onInterstitialClosed(MFXInterstitial interstitial) {
-            Toast.makeText(MainActivity.this,"onInterstitialClosed",Toast.LENGTH_SHORT).show();
+            ShowToast("onInterstitialClosed");
 
             MobfoxSDK.releaseInterstitial(mMFXInterstitialAd);
         }
 
         @Override
         public void onInterstitialClicked(MFXInterstitial interstitial, String url) {
-            Toast.makeText(MainActivity.this,"onInterstitialClicked",Toast.LENGTH_SHORT).show();
+            ShowToast("onInterstitialClicked");
         }
 
         @Override
         public void onInterstitialShown(MFXInterstitial interstitial) {
-            Toast.makeText(MainActivity.this,"onInterstitialShown",Toast.LENGTH_SHORT).show();
+            ShowToast("onInterstitialShown");
         }
 
         @Override
         public void onInterstitialFinished(MFXInterstitial interstitial) {
-            Toast.makeText(MainActivity.this,"onInterstitialFinished",Toast.LENGTH_SHORT).show();
+            ShowToast("onInterstitialFinished");
         }
     };
 
@@ -604,7 +713,7 @@ public class MainActivity extends AppCompatActivity {
         clearAllAds();
 
         mMFXNativeAd = MobfoxSDK.createNative(MainActivity.this,
-                MOBFOX_HASH_NATIVE,
+                MobfoxHashNative(),
                 nativeListener);
         MobfoxSDK.loadNative(mMFXNativeAd);
     }
@@ -654,7 +763,7 @@ public class MainActivity extends AppCompatActivity {
     private MFXNativeListener nativeListener = new MFXNativeListener() {
         @Override
         public void onNativeLoaded(MFXNative aNative) {
-            Toast.makeText(self, "on native loaded", Toast.LENGTH_SHORT).show();
+            ShowToast( "on native loaded");
 
             Map<String, String> textItems = MobfoxSDK.getNativeTexts(mMFXNativeAd);
 
@@ -678,7 +787,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onNativeImagesReady(MFXNative aNative) {
-            Toast.makeText(self, "on images ready", Toast.LENGTH_SHORT).show();
+            ShowToast( "on images ready");
 
             Map<String, Bitmap> imageItems = MobfoxSDK.getNativeImageBitmaps(mMFXNativeAd);
 
@@ -688,12 +797,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onNativeLoadFailed(MFXNative aNative, String code) {
-            Toast.makeText(self, "MFXNative error: "+code, Toast.LENGTH_SHORT).show();
+            ShowToast( "MFXNative error: "+code);
         }
 
         @Override
         public void onNativeClicked(MFXNative aNative) {
-            Toast.makeText(self, "MFXNative clicked", Toast.LENGTH_SHORT).show();
+            ShowToast( "MFXNative clicked");
         }
     };
 
@@ -737,28 +846,28 @@ public class MainActivity extends AppCompatActivity {
         mMoPubBannerAd.setBannerAdListener(new MoPubView.BannerAdListener() {
             @Override
             public void onBannerLoaded(MoPubView banner) {
-                Toast.makeText(c, "MoPub Banner loaded", Toast.LENGTH_SHORT).show();
+                ShowToast( "MoPub Banner loaded");
             }
 
             @Override
             public void onBannerFailed(MoPubView banner, MoPubErrorCode errorCode) {
-                Toast.makeText(c, "MoPub Banner failed", Toast.LENGTH_SHORT).show();
+                ShowToast( "MoPub Banner failed");
                 banner.destroy();
             }
 
             @Override
             public void onBannerClicked(MoPubView banner) {
-                Toast.makeText(c, "MoPub Banner clicked", Toast.LENGTH_SHORT).show();
+                ShowToast( "MoPub Banner clicked");
             }
 
             @Override
             public void onBannerExpanded(MoPubView banner) {
-                Toast.makeText(c, "MoPub Banner expanded", Toast.LENGTH_SHORT).show();
+                ShowToast( "MoPub Banner expanded");
             }
 
             @Override
             public void onBannerCollapsed(MoPubView banner) {
-                Toast.makeText(c, "MoPub Banner collapsed", Toast.LENGTH_SHORT).show();
+                ShowToast( "MoPub Banner collapsed");
                 banner.destroy();
             }
         });
@@ -791,32 +900,32 @@ public class MainActivity extends AppCompatActivity {
         mMoPubInterstitialAd.setInterstitialAdListener(new MoPubInterstitial.InterstitialAdListener() {
             @Override
             public void onInterstitialLoaded(MoPubInterstitial interstitial) {
-                Toast.makeText(c, "loaded", Toast.LENGTH_SHORT).show();
+                ShowToast( "loaded");
                 if (interstitial.isReady()) {
                     mMoPubInterstitialAd.show();
                 } else {
-                    Toast.makeText(c, "Interstitial is not ready yet !", Toast.LENGTH_SHORT).show();
+                    ShowToast( "Interstitial is not ready yet !");
                 }
             }
 
             @Override
             public void onInterstitialFailed(MoPubInterstitial interstitial, MoPubErrorCode errorCode) {
-                Toast.makeText(c, "Interstitial load failed: " + errorCode, Toast.LENGTH_SHORT).show();
+                ShowToast( "Interstitial load failed: " + errorCode);
             }
 
             @Override
             public void onInterstitialShown(MoPubInterstitial interstitial) {
-                Toast.makeText(c, "shown", Toast.LENGTH_SHORT).show();
+                ShowToast( "shown");
             }
 
             @Override
             public void onInterstitialClicked(MoPubInterstitial interstitial) {
-                Toast.makeText(c, "clicked", Toast.LENGTH_SHORT).show();
+                ShowToast( "clicked");
             }
 
             @Override
             public void onInterstitialDismissed(MoPubInterstitial interstitial) {
-                Toast.makeText(c, "dismissed", Toast.LENGTH_SHORT).show();
+                ShowToast( "dismissed");
                 interstitial.destroy();
             }
         });
@@ -840,7 +949,7 @@ public class MainActivity extends AppCompatActivity {
         mMoPubNativeAd = new MoPubNative(this, mopubNativeInvh, new MoPubNative.MoPubNativeNetworkListener() {
             @Override
             public void onNativeLoad(NativeAd nativeAd) {
-                Toast.makeText(self, "MoPub native loaded", Toast.LENGTH_SHORT).show();
+                ShowToast( "MoPub native loaded");
 
                 nativeAd.prepare(findViewById(R.id.linNative));
 
@@ -848,12 +957,12 @@ public class MainActivity extends AppCompatActivity {
                 nativeAd.setMoPubNativeEventListener(new NativeAd.MoPubNativeEventListener() {
                     @Override
                     public void onImpression(View view) {
-                        Toast.makeText(self, "MoPub native recorded an impression", Toast.LENGTH_SHORT).show();
+                        ShowToast( "MoPub native recorded an impression");
                     }
 
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(self, "MoPub native recorded a click", Toast.LENGTH_SHORT).show();
+                        ShowToast( "MoPub native recorded a click");
                     }
                 });
 
@@ -867,7 +976,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onNativeFail(NativeErrorCode errorCode) {
-                Toast.makeText(self, "MoPub native error: "+errorCode, Toast.LENGTH_SHORT).show();
+                ShowToast( "MoPub native error: "+errorCode);
             }
         });
 
@@ -921,8 +1030,161 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onInitializationFinished() {
                     Log.d("MobfoxSDK", "MoPub SDK init");
+
+                    if (MFXStorage.sharedInstance(c).getPrefBool("MFX4Demo_do_like_picsart",false))
+                    {
+                        DoLikePicsart();
+                    }
                 }
             });
+        }
+    }
+
+    //###########################################################################################
+    //###########################################################################################
+    //#####                                                                                 #####
+    //#####   P i c s a r t                                                                 #####
+    //#####                                                                                 #####
+    //###########################################################################################
+    //###########################################################################################
+
+    private static String mopubBannerPicsartInvh       = "49ace665424e41138d1ffe34780f6971";//"4ad212b1d0104c5998b288e7a8e35967";
+    private static String mopubInterstitialPicsartInvh = "1932d720d19c4c2ca96fce403e373e46";//"3fd85a3e7a9d43ea993360a2536b7bbd";
+
+    private MoPubView         mMoPubBannerAd1       = null;
+    private MoPubInterstitial mMoPubInterstitialAd1 = null;
+    private MoPubInterstitial mMoPubInterstitialAd2 = null;
+
+    private void DoLikePicsart()
+    {
+        final Context c = this;
+
+        // ===== first interstitial: =====================================
+        mMoPubInterstitialAd1 = new MoPubInterstitial(self,mopubInterstitialPicsartInvh);
+        mMoPubInterstitialAd1.setInterstitialAdListener(new MoPubInterstitial.InterstitialAdListener() {
+            @Override
+            public void onInterstitialLoaded(MoPubInterstitial interstitial) {
+                ShowToast( "Picsart interstitial loaded");
+                if (interstitial.isReady()) {
+                    //@@@mMoPubInterstitialAd1.show();
+                } else {
+                    ShowToast( "Picsart interstitial is not ready yet !");
+                }
+            }
+
+            @Override
+            public void onInterstitialFailed(MoPubInterstitial interstitial, MoPubErrorCode errorCode) {
+                ShowToast( "Picsart interstitial load failed: " + errorCode);
+            }
+
+            @Override
+            public void onInterstitialShown(MoPubInterstitial interstitial) {
+                ShowToast( "Picsart interstitial shown");
+            }
+
+            @Override
+            public void onInterstitialClicked(MoPubInterstitial interstitial) {
+                ShowToast( "Picsart interstitial clicked");
+            }
+
+            @Override
+            public void onInterstitialDismissed(MoPubInterstitial interstitial) {
+                ShowToast( "Picsart interstitial dismissed");
+                interstitial.destroy();
+            }
+        });
+        mMoPubInterstitialAd1.load();
+
+        // ===== second interstitial: =====================================
+
+        /*
+        mMoPubInterstitialAd2 = new MoPubInterstitial(self,mopubInterstitialPicsartInvh);
+        mMoPubInterstitialAd2.setInterstitialAdListener(new MoPubInterstitial.InterstitialAdListener() {
+            @Override
+            public void onInterstitialLoaded(MoPubInterstitial interstitial) {
+                ShowToast( "Picsart interstitial2 loaded");
+                if (interstitial.isReady()) {
+                    //@@@mMoPubInterstitialAd2.show();
+                } else {
+                    ShowToast( "Picsart interstitial2 is not ready yet !");
+                }
+            }
+
+            @Override
+            public void onInterstitialFailed(MoPubInterstitial interstitial, MoPubErrorCode errorCode) {
+                ShowToast( "Picsart interstitial2 load failed: " + errorCode);
+            }
+
+            @Override
+            public void onInterstitialShown(MoPubInterstitial interstitial) {
+                ShowToast( "Picsart interstitial2 shown");
+            }
+
+            @Override
+            public void onInterstitialClicked(MoPubInterstitial interstitial) {
+                ShowToast( "Picsart interstitial2 clicked");
+            }
+
+            @Override
+            public void onInterstitialDismissed(MoPubInterstitial interstitial) {
+                ShowToast( "Picsart interstitial2 dismissed");
+                interstitial.destroy();
+            }
+        });
+        mMoPubInterstitialAd2.load();
+        */
+        // ===== first banner: =====================================
+
+        mMoPubBannerAd1 = new MoPubView(this);
+        //@@@relBanner.addView(mMoPubBannerAd1);
+
+        mMoPubBannerAd1.setAdUnitId(mopubBannerPicsartInvh);
+        mMoPubBannerAd1.setBannerAdListener(new MoPubView.BannerAdListener() {
+            @Override
+            public void onBannerLoaded(MoPubView banner) {
+                ShowToast( "Picsart Banner loaded");
+            }
+
+            @Override
+            public void onBannerFailed(MoPubView banner, MoPubErrorCode errorCode) {
+                ShowToast( "Picsart Banner failed");
+                banner.destroy();
+            }
+
+            @Override
+            public void onBannerClicked(MoPubView banner) {
+                ShowToast( "Picsart Banner clicked");
+            }
+
+            @Override
+            public void onBannerExpanded(MoPubView banner) {
+                ShowToast( "Picsart Banner expanded");
+            }
+
+            @Override
+            public void onBannerCollapsed(MoPubView banner) {
+                ShowToast( "Picsart Banner collapsed");
+                banner.destroy();
+            }
+        });
+
+        /*
+        Location locCurr = new Location(LocationManager.GPS_PROVIDER);
+        locCurr.setLatitude (32.000000);
+        locCurr.setLongitude(35.000000);
+        mMoPubBannerAd1.setLocation(locCurr);
+
+        Map<String, Object> localExtras = new HashMap<>();
+        localExtras.put("demo_age"   , "23");
+        localExtras.put("demo_gender", "female");
+        localExtras.put("r_floor"    , "0.03");
+        localExtras.put("keywords"   , "soccer,baseball");
+
+        mMoPubBannerAd1.setLocalExtras(localExtras);
+        */
+
+        if (MoPub.isSdkInitialized()) {
+            mMoPubBannerAd1.loadAd();
         }
     }
 
@@ -984,40 +1246,40 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
-                Toast.makeText(c, "AdMob Banner loaded", Toast.LENGTH_SHORT).show();
+                ShowToast( "AdMob Banner loaded");
                 Log.d("MobfoxSDK", "AdMob Banner loaded");
             }
 
             @Override
             public void onAdFailedToLoad(int errorCode) {
                 // Code to be executed when an ad request fails.
-                Toast.makeText(c, "AdMob Banner failed", Toast.LENGTH_SHORT).show();
+                ShowToast( "AdMob Banner failed");
             }
 
             @Override
             public void onAdOpened() {
                 // Code to be executed when an ad opens an overlay that
                 // covers the screen.
-                Toast.makeText(c, "AdMob Banner opened", Toast.LENGTH_SHORT).show();
+                ShowToast( "AdMob Banner opened");
             }
 
             @Override
             public void onAdClicked() {
                 // Code to be executed when the user clicks on an ad.
-                Toast.makeText(c, "AdMob Banner clicked", Toast.LENGTH_SHORT).show();
+                ShowToast( "AdMob Banner clicked");
             }
 
             @Override
             public void onAdLeftApplication() {
                 // Code to be executed when the user has left the app.
-                Toast.makeText(c, "AdMob Banner left app", Toast.LENGTH_SHORT).show();
+                ShowToast( "AdMob Banner left app");
             }
 
             @Override
             public void onAdClosed() {
                 // Code to be executed when the user is about to return
                 // to the app after tapping on an ad.
-                Toast.makeText(c, "AdMob Banner closed", Toast.LENGTH_SHORT).show();
+                ShowToast( "AdMob Banner closed");
             }
         });
 
@@ -1061,27 +1323,27 @@ public class MainActivity extends AppCompatActivity {
         mAdMobInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdClosed() {
-                Toast.makeText(c, "AdMob Interstitial onAdClosed", Toast.LENGTH_SHORT).show();
+                ShowToast( "AdMob Interstitial onAdClosed");
             }
 
             @Override
             public void onAdFailedToLoad(int errorCode) {
-                Toast.makeText(c, "AdMob Interstitial onAdFailedToLoad: "+errorCode, Toast.LENGTH_SHORT).show();
+                ShowToast( "AdMob Interstitial onAdFailedToLoad: "+errorCode);
             }
 
             @Override
             public void onAdLeftApplication() {
-                Toast.makeText(c, "AdMob Interstitial onAdLeftApplication", Toast.LENGTH_SHORT).show();
+                ShowToast( "AdMob Interstitial onAdLeftApplication");
             }
 
             @Override
             public void onAdOpened() {
-                Toast.makeText(c, "AdMob Interstitial onAdOpened", Toast.LENGTH_SHORT).show();
+                ShowToast( "AdMob Interstitial onAdOpened");
             }
 
             @Override
             public void onAdLoaded() {
-                Toast.makeText(c, "AdMob Interstitial onAdLoaded", Toast.LENGTH_SHORT).show();
+                ShowToast( "AdMob Interstitial onAdLoaded");
                 mAdMobInterstitialAd.show();
             }
         });
@@ -1113,10 +1375,10 @@ public class MainActivity extends AppCompatActivity {
                         if ((mAdMobNativeAdLoader!=null) && (mAdMobNativeAdLoader.isLoading())) {
                             // The AdLoader is still loading ads.
                             // Expect more adLoaded or onAdFailedToLoad callbacks.
-                            Toast.makeText(c,"AdMob Native loading...",Toast.LENGTH_SHORT).show();
+                            ShowToast("AdMob Native loading...");
                         } else {
                             // The AdLoader has finished loading ads.
-                            Toast.makeText(c,"AdMob Native DONE loading !",Toast.LENGTH_SHORT).show();
+                            ShowToast("AdMob Native DONE loading !");
 
                             updateNativeText(titleNative    , unifiedNativeAd.getHeadline());//textItems.get("title"));
                             updateNativeText(descNative     , unifiedNativeAd.getBody());//textItems.get("desc"));
@@ -1149,7 +1411,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onAdFailedToLoad(int errorCode) {
                         // Handle the failure by logging, altering the UI, and so on.
-                        Toast.makeText(c,"AdMob Native Failed: "+errorCode,Toast.LENGTH_SHORT).show();
+                        ShowToast("AdMob Native Failed: "+errorCode);
                     }
                 })
                 .withNativeAdOptions(new NativeAdOptions.Builder()
