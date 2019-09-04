@@ -286,6 +286,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 MFXStorage.sharedInstance(MainActivity.this).setPrefBool("MFX4Demo_use_live_ads",isChecked);
+                clearAllAds();
                 UpdateConfigButtons();
             }
         });
@@ -295,6 +296,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 MFXStorage.sharedInstance(MainActivity.this).setPrefBool("MFX4Demo_do_like_picsart",isChecked);
+                clearAllAds();
                 UpdateConfigButtons();
             }
         });
