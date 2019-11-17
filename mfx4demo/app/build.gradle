@@ -67,9 +67,9 @@ dependencies {
         exclude module: 'moat-mobile-app-kit' // To exclude Moat
     }
 
-    implementation 'com.github.mobfox:mfx-android-sdk:v4.0.8'
-    implementation 'com.github.mobfox:mfx-android-mopub-adapter:v4.0.8'
-    implementation 'com.github.mobfox:mfx-android-admob-adapter:v4.0.8'
+    implementation 'com.github.mobfox:mfx-android-sdk:v4.0.10'
+    implementation 'com.github.mobfox:mfx-android-mopub-adapter:v4.0.10'
+    implementation 'com.github.mobfox:mfx-android-admob-adapter:v4.0.10'
 
     //implementation files('libs/MobFox-Android-MobfoxSDK-4.0.8.jar')
     //implementation files('libs/MobFox-Android-AdMob-Adapter-4.0.8.jar')
