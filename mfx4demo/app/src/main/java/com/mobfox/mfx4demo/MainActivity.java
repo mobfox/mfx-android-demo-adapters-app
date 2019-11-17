@@ -481,7 +481,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String MOBFOX_HASH_BANNER_VIDEO = "80187188f458cfde788d961b6882fd53";
     public static final String MOBFOX_HASH_INTER_HTML   = "267d72ac3f77a3f447b32cf7ebf20673";
     public static final String MOBFOX_HASH_INTER_VIDEO  = "80187188f458cfde788d961b6882fd53";
-    public static final String MOBFOX_HASH_NATIVE       = "4510d1b36036ac5c9e80ee1f1c74931c";//"a764347547748896b84e0b8ccd90fd62";
+    public static final String MOBFOX_HASH_NATIVE       = "d8bd50e4ba71a708ad224464bdcdc237";//"a764347547748896b84e0b8ccd90fd62";
 
     public static final String MOBFOX_LIVE_HASH_BANNER_HTML  = "fc57543a03d1a12362211f2a5771dbe6";
     public static final String MOBFOX_LIVE_HASH_BANNER_VIDEO = "e40be240fb5ae46b55ae0688242b5ff4";
