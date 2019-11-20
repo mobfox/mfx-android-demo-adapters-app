@@ -48,9 +48,14 @@
             android:hardwareAccelerated="true"
             />
 
+        <!--
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-8111915318550857~9804223329"/>
+            -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-6224828323195096~8368193162"/>
 
         <!-- MoPub's consent dialog -->
         <activity android:name="com.mopub.common.privacy.ConsentDialogActivity" android:configChanges="keyboardHidden|orientation|screenSize"/>
