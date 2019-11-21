@@ -847,6 +847,10 @@ public class MainActivity extends AppCompatActivity {
     {
         final Context c = this;
 
+        MobfoxSDK.init(c);
+
+        MobfoxSDK.setCOPPA(true);
+
         mMoPubBannerAd = new MoPubView(this);
         relBanner.addView(mMoPubBannerAd);
 
