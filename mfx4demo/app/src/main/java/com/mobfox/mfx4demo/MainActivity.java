@@ -1214,16 +1214,16 @@ public class MainActivity extends AppCompatActivity {
     //private static String   admobBannerInvh       = "ca-app-pub-6224828323195096/4723665370";
     //private static String   admobBannerInvh       = "ca-app-pub-6224828323195096/7573529306";   // com.lyrebirdstudio.colorizer.lite
 
-    //private static String   admobInterstitialInvh = "ca-app-pub-8111915318550857/9385420926";   // sdk.mobfox.com.appcore
+    private static String   admobInterstitialInvh = "ca-app-pub-8111915318550857/9385420926";   // sdk.mobfox.com.appcore
     //private static String   admobInterstitialInvh = "ca-app-pub-6224828323195096/1031427961";
     //private static String   admobInterstitialInvh = "ca-app-pub-6224828323195096/3716389562";
-    private static String   admobInterstitialInvh = "ca-app-pub-6224828323195096/5075358473";   // com.lyrebirdstudio.colorizer.lite
+    //private static String   admobInterstitialInvh = "ca-app-pub-6224828323195096/5075358473";   // com.lyrebirdstudio.colorizer.lite
 
-    //private static String   admobInterVideoInvh   = "ca-app-pub-8111915318550857/7271416015";   // sdk.mobfox.com.appcore
+    private static String   admobInterVideoInvh   = "ca-app-pub-8111915318550857/7271416015";   // sdk.mobfox.com.appcore
     //private static String   admobInterVideoInvh   = "ca-app-pub-6224828323195096/5018083420";
     //private static String   admobInterVideoInvh   = "ca-app-pub-6224828323195096/6293496404";
     //private static String   admobInterVideoInvh   = "ca-app-pub-6224828323195096/3340427870";
-    private static String   admobInterVideoInvh   = "ca-app-pub-6224828323195096/6293496404";   // com.lyrebirdstudio.colorizer.lite
+    //private static String   admobInterVideoInvh   = "ca-app-pub-6224828323195096/6293496404";   // com.lyrebirdstudio.colorizer.lite
 
     private static String   admobNativeInvh       = "ca-app-pub-3940256099942544/2247696110";
     //private static String   admobNativeInvh       = "ca-app-pub-6224828323195096~6049137964";
