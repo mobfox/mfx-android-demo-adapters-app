@@ -203,6 +203,18 @@
             />
 
         <Button
+            android:id="@+id/btnRewarded"
+            android:layout_width="0dp"
+            android:layout_weight="1.0"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:background="#ffcfcfcf"
+            android:text="Rewarded"
+            android:textSize="12dp"
+            android:textAllCaps="false"
+            />
+
+        <Button
             android:id="@+id/btnNative"
             android:layout_width="0dp"
             android:layout_weight="1.0"

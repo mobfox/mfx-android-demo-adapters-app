@@ -55,11 +55,10 @@ android {
 
 dependencies {
     //implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
 
     // AdMob:
-    implementation 'com.google.android.gms:play-services-ads:17.2.1'
+    implementation 'com.google.android.gms:play-services-ads:18.3.0'
 
     implementation('com.mopub:mopub-sdk:5.7.0@aar') {
         transitive = true
@@ -67,9 +66,13 @@ dependencies {
         exclude module: 'moat-mobile-app-kit' // To exclude Moat
     }
 
-    implementation 'com.github.mobfox:mfx-android-sdk:v4.0.14rc'
-    implementation 'com.github.mobfox:mfx-android-mopub-adapter:v4.0.14rc'
-    implementation 'com.github.mobfox:mfx-android-admob-adapter:v4.0.14rc'
+    implementation 'com.github.mobfox:mfx-android-sdk:4.1.0'
+    implementation 'com.github.mobfox:mfx-android-mopub-adapter:4.1.0'
+    implementation 'com.github.mobfox:mfx-android-admob-adapter:4.1.0'
+
+    //implementation 'com.github.mobfox:mfx-android-sdk:v4.0.14rc'
+    //implementation 'com.github.mobfox:mfx-android-mopub-adapter:v4.0.14rc'
+    //implementation 'com.github.mobfox:mfx-android-admob-adapter:v4.0.14rc'
 
     //implementation 'com.github.mobfox:mfx-android-sdk:v4.0.12'
     //implementation 'com.github.mobfox:mfx-android-mopub-adapter:v4.0.12'
@@ -79,6 +82,6 @@ dependencies {
     //implementation files('libs/MobFox-Android-AdMob-Adapter-4.0.8.jar')
     //implementation files('libs/MobFox-Android-MoPub-Adapter-4.0.8.jar')
 
-    implementation 'com.android.volley:volley:1.1.0'
+    implementation 'com.android.volley:volley:1.1.1'
     implementation('com.google.android.gms:play-services-ads-identifier:16.0.0')
 }

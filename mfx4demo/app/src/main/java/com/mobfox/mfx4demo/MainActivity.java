@@ -2,15 +2,15 @@ package com.mobfox.mfx4demo;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -20,7 +20,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,22 +36,28 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.formats.NativeAdOptions;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
+import com.google.android.gms.ads.rewarded.RewardItem;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdCallback;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.mobfox.adapter.MobFoxAdapter;
 import com.mobfox.android.MobfoxSDK;
 import com.mobfox.android.MobfoxSDK.*;
 
 // added for MoPub
 import com.mobfox.android.core.MFXStorage;
-import com.mobfox.android.core.gdpr.GDPRParams;
 import com.mobfox.sdk.adapters.MoPubUtils;
 import com.mopub.common.MoPub;
+import com.mopub.common.MoPubReward;
 import com.mopub.common.SdkConfiguration;
 import com.mopub.common.SdkInitializationListener;
 import com.mopub.mobileads.MoPubErrorCode;
 import com.mopub.mobileads.MoPubInterstitial;
+import com.mopub.mobileads.MoPubRewardedVideo;
+import com.mopub.mobileads.MoPubRewardedVideoListener;
+import com.mopub.mobileads.MoPubRewardedVideos;
 import com.mopub.mobileads.MoPubView;
 import com.mopub.nativeads.AdapterHelper;
 import com.mopub.nativeads.MoPubNative;
@@ -60,6 +65,11 @@ import com.mopub.nativeads.MoPubStaticNativeAdRenderer;
 import com.mopub.nativeads.NativeAd;
 import com.mopub.nativeads.NativeErrorCode;
 import com.mopub.nativeads.ViewBinder;
+
+import static com.google.android.gms.ads.AdRequest.ERROR_CODE_INVALID_REQUEST;
+import static com.google.android.gms.ads.AdRequest.ERROR_CODE_NETWORK_ERROR;
+import static com.google.android.gms.ads.AdRequest.ERROR_CODE_NO_FILL;
+import static com.google.android.gms.ads.AdRequest.ERROR_CODE_INTERNAL_ERROR;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -83,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Button          btnInterstitialHtml;
     private Button          btnInterstitialVideo;
+
+    private Button          btnRewarded;
 
     private Button          btnNative;
 
@@ -123,6 +135,8 @@ public class MainActivity extends AppCompatActivity {
         initBannerButtons();
 
         initInterstitialButtons();
+
+        initRewardedButtons();
 
         initNativeButtons();
 
@@ -235,6 +249,7 @@ public class MainActivity extends AppCompatActivity {
 
         clearAdMobBanner();
         clearAdMobInterstitial();
+        clearAdMobRewarded();
         clearAdMobNative();
     }
 
@@ -256,6 +271,7 @@ public class MainActivity extends AppCompatActivity {
                 btnBannerVideo.setEnabled      (true);
                 btnInterstitialHtml.setEnabled (true);
                 btnInterstitialVideo.setEnabled(true);
+                btnRewarded.setEnabled         (false);
                 btnNative.setEnabled           (true);
                 break;
             case ADAPTER_TYPE_MOPUB:
@@ -264,6 +280,7 @@ public class MainActivity extends AppCompatActivity {
                 btnBannerVideo.setEnabled      (false);
                 btnInterstitialHtml.setEnabled (true);
                 btnInterstitialVideo.setEnabled(true);
+                btnRewarded.setEnabled         (true);
                 btnNative.setEnabled           (true);
                 break;
             case ADAPTER_TYPE_ADMOB:
@@ -272,6 +289,7 @@ public class MainActivity extends AppCompatActivity {
                 btnBannerVideo.setEnabled      (false);
                 btnInterstitialHtml.setEnabled (true);
                 btnInterstitialVideo.setEnabled(true);
+                btnRewarded.setEnabled         (true);
                 btnNative.setEnabled           (false);
                 break;
         }
@@ -418,6 +436,32 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case ADAPTER_TYPE_ADMOB:
                         startAdMobInterstitial(admobInterVideoInvh);
+                        break;
+                }
+            }
+        });
+    }
+
+    //===========================================================================================
+
+    private void initRewardedButtons()
+    {
+        btnRewarded = (Button)findViewById(R.id.btnRewarded);
+        btnRewarded.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShowToast("Loading rewarded...");
+
+                switch (mAdapterType)
+                {
+                    case ADAPTER_TYPE_MOBFOX:
+                        // REWARDED_ROLLBACK startMobFoxRewarded();
+                        break;
+                    case ADAPTER_TYPE_MOPUB:
+                        startMoPubRewarded(mopubRewardedInvh);
+                        break;
+                    case ADAPTER_TYPE_ADMOB:
+                        startAdMobRewarded(admobRewardedInvh);
                         break;
                 }
             }
@@ -822,22 +866,27 @@ public class MainActivity extends AppCompatActivity {
     //###########################################################################################
     //###########################################################################################
 
-    private static String mopubBannerInvh          = "4ad212b1d0104c5998b288e7a8e35967";
-    //private static String mopubBannerInvh        = "c2ec34f19e82433787a120aab00f9732";
-    private static String mopubBannerLargeInvh     = "bf453fccdfe74af0ab8f6a944d6ae97a";
+    private static String mopubBannerInvh          = "4ad212b1d0104c5998b288e7a8e35967";    // Android MobFox Adapter / Test Hash Banner(DONT CHANGE)
+    private static String mopubBannerLargeInvh     = "bf453fccdfe74af0ab8f6a944d6ae97a";    // Android MobFox Adapter /
+    private static String mopubInterstitialInvh    = "3fd85a3e7a9d43ea993360a2536b7bbd";    // Android MobFox Adapter / Test Hash Interstitial(DONT CHANGE)
+    private static String mopubInterVideoInvh      = "562f11d6b8f2499dbd0d1ebfe3c17968";    // Android MobFox Adapter / VIDEO_INTERSTITIAL_HASH (DONT CHANGE)
+    private static String mopubNativeInvh          = "b146b367940a4c6da94e8143fb4b66e4";    // Android MobFox Adapter / AvocarrotNative       e2758ffdaf0d426aa19a633bab6bbc3a Test Hash Native (DONT CHANGE)
 
-    private static String mopubInterstitialInvh    = "3fd85a3e7a9d43ea993360a2536b7bbd";
-    //private static String mopubInterstitialInvh  = "28c3e68fc45a4276beaae95d32d21fb8";
+    //private static String mopubRewardedInvh        = "562f11d6b8f2499dbd0d1ebfe3c17968";    // Android MobFox Adapter / VIDEO_INTERSTITIAL_HASH (DONT CHANGE)
+    private static String mopubRewardedInvh        = "005491feb31848a0ae7b9daf4a46c701";    // Android MobFox Adapter / MF Android Rewarded (DONT CHANGE)
 
-    private static String mopubInterVideoInvh      = "3fd85a3e7a9d43ea993360a2536b7bbd";//"562f11d6b8f2499dbd0d1ebfe3c17968";
-    //private static String mopubInterVideoInvh    = "e7f2729a9ff54e17aa39f515f9a85eaa";
-
-    //private static String mopubNativeInvh        = "11a17b188668469fb0412708c3d16813";
-    private static String mopubNativeInvh        = "b146b367940a4c6da94e8143fb4b66e4";
-    //private static String mopubNativeInvh        = "13cb8dbf4203433e8004bd34ed86406a";
+    // Shimon ads:
+    //private static String mopubBannerInvh          = "2bdfcf59d0f745bea63037b6d89b37d2";
+    //private static String mopubBannerLargeInvh     = "949b36a9c6ac4a6799eb66f9f5dd41c1";
+    //private static String mopubBannerVideoInvh     = "f63925f72d45427ea12e46d273b95d62";
+    //private static String mopubInterstitialInvh    = "ce91a23450a74b2dab5af65ca6de51d1";
+    //private static String mopubInterVideoInvh      = "99d11abd6e7a4b5297445df8d6f7371c";
+    //private static String mopubNativeInvh          = "841e63ae8a3c42b6a4d692689ef33341";
+    //private static String mopubRewardedInvh        = "cd6b6088edfd4e51971eb739e57c6b68";
 
     private MoPubView         mMoPubBannerAd       = null;
     private MoPubInterstitial mMoPubInterstitialAd = null;
+    private MoPubRewardedVideo mMoPubRewardedAd    = null;
     private MoPubNative       mMoPubNativeAd       = null;
     private View              mMoPubNativeView     = null;
 
@@ -942,6 +991,58 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         mMoPubInterstitialAd.load();
+    }
+
+    private void startMoPubRewarded(String hashCode)
+    {
+        final Context c = this;
+
+        MoPubRewardedVideos.setRewardedVideoListener(new MoPubRewardedVideoListener() {
+            @Override
+            public void onRewardedVideoLoadSuccess(@NonNull String adUnitId) {
+                ShowToast( "Rewarded loaded");
+                MoPubRewardedVideos.showRewardedVideo(adUnitId);
+            }
+
+            @Override
+            public void onRewardedVideoLoadFailure(@NonNull String adUnitId, @NonNull MoPubErrorCode errorCode) {
+                ShowToast( "Rewarded load failed: " + errorCode.toString());
+            }
+
+            @Override
+            public void onRewardedVideoStarted(@NonNull String adUnitId) {
+                ShowToast( "Rewarded started");
+            }
+
+            @Override
+            public void onRewardedVideoPlaybackError(@NonNull String adUnitId, @NonNull MoPubErrorCode errorCode) {
+                ShowToast( "Rewarded playback failed: " + errorCode.toString());
+            }
+
+            @Override
+            public void onRewardedVideoClicked(@NonNull String adUnitId) {
+                ShowToast( "Rewarded clicked");
+            }
+
+            @Override
+            public void onRewardedVideoClosed(@NonNull String adUnitId) {
+                ShowToast( "Rewarded closed");
+            }
+
+            @Override
+            public void onRewardedVideoCompleted(@NonNull Set<String> adUnitIds, @NonNull MoPubReward reward) {
+                // Called when a rewarded video is completed and the user should be rewarded.
+                // You can query the reward object with boolean isSuccessful(), String getLabel(), and int getAmount().
+                if (reward.isSuccessful())
+                {
+                    ShowToast( "Rewarded completed, got "+reward.getAmount()+" "+reward.getLabel());
+                } else {
+                    ShowToast( "Rewarded not completed");
+                }
+            }
+        });
+
+        MoPubRewardedVideos.loadRewardedVideo(hashCode);
     }
 
     private void startMoPubNative()
@@ -1225,11 +1326,19 @@ public class MainActivity extends AppCompatActivity {
     //private static String   admobInterVideoInvh   = "ca-app-pub-6224828323195096/3340427870";
     //private static String   admobInterVideoInvh   = "ca-app-pub-6224828323195096/6293496404";   // com.lyrebirdstudio.colorizer.lite
 
+    //private static String   admobRewardedInvh     = "ca-app-pub-3940256099942544/5224354917";   // AdMob test ad unit
+    //private static String   admobRewardedInvh     = "ca-app-pub-8111915318550857/7271416015";   // sdk.mobfox.com.appcore
+    private static String   admobRewardedInvh     = "ca-app-pub-6224828323195096/1152622735";   // "Shimon Rewarded" - com.lyrebirdstudio.colorizer.lite
+    //private static String   admobRewardedInvh     = "ca-app-pub-6224828323195096/6739427693";   // "rewardedExample" - com.lyrebirdstudio.colorizer.lite
+    //private static String   admobRewardedInvh     = "ca-app-pub-6224828323195096/7876284361";   // iOS
+    //private static String   admobRewardedInvh   = "ca-app-pub-8111915318550857/7271416015";   // sdk.mobfox.com.appcore
+
     private static String   admobNativeInvh       = "ca-app-pub-3940256099942544/2247696110";
     //private static String   admobNativeInvh       = "ca-app-pub-6224828323195096~6049137964";
 
     private AdView          mAdMobBannerView      = null;
     private InterstitialAd  mAdMobInterstitialAd  = null;
+    private RewardedAd      mAdMobRewardedAd      = null;
     private AdLoader        mAdMobNativeAdLoader  = null;
 
     //===========================================================================================
@@ -1265,7 +1374,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAdFailedToLoad(int errorCode) {
                 // Code to be executed when an ad request fails.
-                ShowToast( "AdMob Banner failed");
+                switch (errorCode)
+                {
+                    case ERROR_CODE_INTERNAL_ERROR:
+                        ShowToast( "AdMob Banner failed (INTERNAL_ERROR)");
+                        break;
+                    case ERROR_CODE_INVALID_REQUEST:
+                        ShowToast( "AdMob Banner failed (INVALID_REQUEST)");
+                        break;
+                    case ERROR_CODE_NETWORK_ERROR:
+                        ShowToast( "AdMob Banner failed (NETWORK_ERROR)");
+                        break;
+                    case ERROR_CODE_NO_FILL:
+                        ShowToast( "AdMob Banner failed (NO_FILL)");
+                        break;
+                }
             }
 
             @Override
@@ -1301,9 +1424,6 @@ public class MainActivity extends AppCompatActivity {
         locCurr.setLongitude(35.006789);
 
         Bundle bundle = new Bundle();
-        bundle.putBoolean("gdpr", true);
-        bundle.putString("gdpr_consent", "YES");
-
         bundle.putString("demo_age","24");
         bundle.putString("demo_gender","male");
         bundle.putString("r_floor","0.04");
@@ -1325,10 +1445,6 @@ public class MainActivity extends AppCompatActivity {
 
         clearAdMobInterstitial();
 
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("gdpr", true);
-        bundle.putString("gdpr_consent", "YES");
-
         mAdMobInterstitialAd = new InterstitialAd(self);
         mAdMobInterstitialAd.setAdUnitId(invh);
 
@@ -1340,7 +1456,21 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onAdFailedToLoad(int errorCode) {
-                ShowToast( "AdMob Interstitial onAdFailedToLoad: "+errorCode);
+                switch (errorCode)
+                {
+                    case ERROR_CODE_INTERNAL_ERROR:
+                        ShowToast( "AdMob Interstitial failed (INTERNAL_ERROR)");
+                        break;
+                    case ERROR_CODE_INVALID_REQUEST:
+                        ShowToast( "AdMob Interstitial failed (INVALID_REQUEST)");
+                        break;
+                    case ERROR_CODE_NETWORK_ERROR:
+                        ShowToast( "AdMob Interstitial failed (NETWORK_ERROR)");
+                        break;
+                    case ERROR_CODE_NO_FILL:
+                        ShowToast( "AdMob Interstitial failed (NO_FILL)");
+                        break;
+                }
             }
 
             @Override
@@ -1360,13 +1490,110 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Location locCurr = new Location(LocationManager.GPS_PROVIDER);
+        locCurr.setLatitude (32.009876);
+        locCurr.setLongitude(35.006789);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("demo_age","24");
+        bundle.putString("demo_gender","male");
+        bundle.putString("r_floor","0.04");
+
         AdRequest adRequestInterstitial = new AdRequest.Builder()
                 //.addTestDevice("SEE_YOUR_LOGCAT_TO_GET_YOUR_DEVICE_ID")
                 .addNetworkExtrasBundle(MobFoxAdapter.class, bundle)
-                //.tagForChildDirectedTreatment(true)
+                .addKeyword("football,basketball")
+                .setLocation(locCurr)
                 .build();
 
         mAdMobInterstitialAd.loadAd(adRequestInterstitial);
+    }
+
+    private void startAdMobRewarded(String invh)
+    {
+        final Context c = this;
+
+        clearAdMobRewarded();
+
+        mAdMobRewardedAd = new RewardedAd(self, invh);
+
+        RewardedAdLoadCallback adLoadCallback = new RewardedAdLoadCallback() {
+            @Override
+            public void onRewardedAdLoaded() {
+                // Ad successfully loaded.
+                ShowToast( "AdMob onRewardedAdLoaded");
+
+                if (mAdMobRewardedAd.isLoaded()) {
+                    Activity activityContext = MainActivity.this;
+                    RewardedAdCallback adCallback = new RewardedAdCallback() {
+                        @Override
+                        public void onRewardedAdOpened() {
+                            // Ad opened.
+                            ShowToast( "AdMob onRewardedAdOpened");
+                        }
+
+                        @Override
+                        public void onRewardedAdClosed() {
+                            // Ad closed.
+                            ShowToast( "AdMob onRewardedAdClosed");
+                        }
+
+                        @Override
+                        public void onUserEarnedReward(@NonNull RewardItem reward) {
+                            // User earned reward.
+                            ShowToast( "AdMob onUserEarnedReward("+reward.getAmount()+", "+reward.getType()+")");
+                        }
+
+                        @Override
+                        public void onRewardedAdFailedToShow(int errorCode) {
+                            // Ad failed to display
+                            ShowToast( "AdMob onRewardedAdFailedToShow: "+errorCode);
+                        }
+                    };
+                    mAdMobRewardedAd.show(activityContext, adCallback);
+                } else {
+                    ShowToast( "AdMob The rewarded ad wasn't loaded yet.");
+                }
+            }
+
+            @Override
+            public void onRewardedAdFailedToLoad(int errorCode) {
+                // Ad failed to load.
+                switch (errorCode)
+                {
+                    case ERROR_CODE_INTERNAL_ERROR:
+                        ShowToast( "AdMob Rewarded failed (INTERNAL_ERROR)");
+                        break;
+                    case ERROR_CODE_INVALID_REQUEST:
+                        ShowToast( "AdMob Rewarded failed (INVALID_REQUEST)");
+                        break;
+                    case ERROR_CODE_NETWORK_ERROR:
+                        ShowToast( "AdMob Rewarded failed (NETWORK_ERROR)");
+                        break;
+                    case ERROR_CODE_NO_FILL:
+                        ShowToast( "AdMob Rewarded failed (NO_FILL)");
+                        break;
+                }
+            }
+        };
+
+        Location locCurr = new Location(LocationManager.GPS_PROVIDER);
+        locCurr.setLatitude (32.009876);
+        locCurr.setLongitude(35.006789);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("demo_age","24");
+        bundle.putString("demo_gender","male");
+        bundle.putString("r_floor","0.04");
+
+        AdRequest adRequestRewarded = new AdRequest.Builder()
+//                .addTestDevice("82109714761F90BAAD73679C21E34E56")
+                .addNetworkExtrasBundle(MobFoxAdapter.class, bundle)
+                .addKeyword("football,basketball")
+                .setLocation(locCurr)
+                .build();
+
+        mAdMobRewardedAd.loadAd(adRequestRewarded, adLoadCallback);
     }
 
     private void startAdMobNative()
@@ -1374,10 +1601,6 @@ public class MainActivity extends AppCompatActivity {
         clearAdMobNative();
 
         final Context c = this;
-
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("gdpr", true);
-        bundle.putString("gdpr_consent", "YES");
 
         mAdMobNativeAdLoader = new AdLoader.Builder(this, admobNativeInvh)
                 .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
@@ -1423,7 +1646,21 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onAdFailedToLoad(int errorCode) {
                         // Handle the failure by logging, altering the UI, and so on.
-                        ShowToast("AdMob Native Failed: "+errorCode);
+                        switch (errorCode)
+                        {
+                            case ERROR_CODE_INTERNAL_ERROR:
+                                ShowToast( "AdMob Native failed (INTERNAL_ERROR)");
+                                break;
+                            case ERROR_CODE_INVALID_REQUEST:
+                                ShowToast( "AdMob Native failed (INVALID_REQUEST)");
+                                break;
+                            case ERROR_CODE_NETWORK_ERROR:
+                                ShowToast( "AdMob Native failed (NETWORK_ERROR)");
+                                break;
+                            case ERROR_CODE_NO_FILL:
+                                ShowToast( "AdMob Native failed (NO_FILL)");
+                                break;
+                        }
                     }
                 })
                 .withNativeAdOptions(new NativeAdOptions.Builder()
@@ -1432,9 +1669,23 @@ public class MainActivity extends AppCompatActivity {
                         .build())
                 .build();
 
-        mAdMobNativeAdLoader.loadAd(new AdRequest.Builder()
+        Location locCurr = new Location(LocationManager.GPS_PROVIDER);
+        locCurr.setLatitude (32.009876);
+        locCurr.setLongitude(35.006789);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("demo_age","24");
+        bundle.putString("demo_gender","male");
+        bundle.putString("r_floor","0.04");
+
+        AdRequest adRequestNtive = new AdRequest.Builder()
+//                .addTestDevice("82109714761F90BAAD73679C21E34E56")
                 .addNetworkExtrasBundle(MobFoxAdapter.class, bundle)
-                .build());
+                .addKeyword("football,basketball")
+                .setLocation(locCurr)
+                .build();
+
+        mAdMobNativeAdLoader.loadAd(adRequestNtive);
     }
 
     public static Bitmap drawableToBitmap (Drawable drawable) {
@@ -1468,6 +1719,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void clearAdMobInterstitial()
+    {
+        // mytodo:
+    }
+
+    private void clearAdMobRewarded()
     {
         // mytodo:
     }
