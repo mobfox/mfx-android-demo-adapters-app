@@ -67,8 +67,8 @@ dependencies {
     }
 
     implementation 'com.github.mobfox:mfx-android-sdk:4.1.1'
-    implementation 'com.github.mobfox:mfx-android-mopub-adapter:v4.1.1'
-    implementation 'com.github.mobfox:mfx-android-admob-adapter:v4.1.1'
+    implementation 'com.github.mobfox:mfx-android-mopub-adapter:4.1.1'
+    implementation 'com.github.mobfox:mfx-android-admob-adapter:4.1.1'
 
     //implementation 'com.github.mobfox:mfx-android-sdk:4.1.0'
     //implementation 'com.github.mobfox:mfx-android-mopub-adapter:4.1.0'
