@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -38,6 +39,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.formats.NativeAdOptions;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
+import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdCallback;
@@ -290,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
                 btnInterstitialHtml.setEnabled (true);
                 btnInterstitialVideo.setEnabled(true);
                 btnRewarded.setEnabled         (true);
-                btnNative.setEnabled           (false);
+                btnNative.setEnabled           (true);
                 break;
         }
     }
@@ -523,7 +525,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String MOBFOX_HASH_BANNER_HTML  = "fe96717d9875b9da4339ea5367eff1ec";
     public static final String MOBFOX_HASH_BANNER_VIDEO = "80187188f458cfde788d961b6882fd53";
-    public static final String MOBFOX_HASH_INTER_HTML   = "267d72ac3f77a3f447b32cf7ebf20673";
+    public static final String MOBFOX_HASH_INTER_HTML   = "855f0e6de92f5187d32ed2b86be45d4a";//"267d72ac3f77a3f447b32cf7ebf20673";
     public static final String MOBFOX_HASH_INTER_VIDEO  = "80187188f458cfde788d961b6882fd53";
     public static final String MOBFOX_HASH_NATIVE       = "d8bd50e4ba71a708ad224464bdcdc237";//"a764347547748896b84e0b8ccd90fd62";
 
@@ -898,7 +900,7 @@ public class MainActivity extends AppCompatActivity {
 
         MobfoxSDK.init(c);
 
-        MobfoxSDK.setCOPPA(true);
+        //MobfoxSDK.setCOPPA(true);
 
         mMoPubBannerAd = new MoPubView(this);
         relBanner.addView(mMoPubBannerAd);
@@ -1333,8 +1335,10 @@ public class MainActivity extends AppCompatActivity {
     //private static String   admobRewardedInvh     = "ca-app-pub-6224828323195096/7876284361";   // iOS
     //private static String   admobRewardedInvh   = "ca-app-pub-8111915318550857/7271416015";   // sdk.mobfox.com.appcore
 
-    private static String   admobNativeInvh       = "ca-app-pub-3940256099942544/2247696110";
+    //private static String   admobNativeInvh       = "ca-app-pub-3940256099942544/2247696110";
     //private static String   admobNativeInvh       = "ca-app-pub-6224828323195096~6049137964";
+    //private static String   admobNativeInvh       = "ca-app-pub-6224828323195096/3417473479";   // advancedNativeTest
+    private static String   admobNativeInvh       = "ca-app-pub-6224828323195096/1268034150";   // Native Android For AdMob
 
     private AdView          mAdMobBannerView      = null;
     private InterstitialAd  mAdMobInterstitialAd  = null;
@@ -1606,6 +1610,7 @@ public class MainActivity extends AppCompatActivity {
                 .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                     @Override
                     public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
+
                         // Show the ad.
                         if ((mAdMobNativeAdLoader!=null) && (mAdMobNativeAdLoader.isLoading())) {
                             // The AdLoader is still loading ads.
@@ -1615,11 +1620,42 @@ public class MainActivity extends AppCompatActivity {
                             // The AdLoader has finished loading ads.
                             ShowToast("AdMob Native DONE loading !");
 
-                            updateNativeText(titleNative    , unifiedNativeAd.getHeadline());//textItems.get("title"));
-                            updateNativeText(descNative     , unifiedNativeAd.getBody());//textItems.get("desc"));
-                            updateNativeText(ratingNative   , String.valueOf(unifiedNativeAd.getStarRating()));
-                            updateNativeText(sponsoredNative, unifiedNativeAd.getAdvertiser());
-                            updateNativeText(ctaNative      , unifiedNativeAd.getCallToAction());
+                            //=== populate unified native ad view:
+                            FrameLayout frameLayout = findViewById(R.id.linAdMobNative);
+                            UnifiedNativeAdView adView      = (UnifiedNativeAdView)getLayoutInflater().inflate(R.layout.admob_native_layout, null);
+
+                            TextView titleNativeAdMob     = (TextView)adView.findViewById(R.id.titleNativeAdMob);
+                            adView.setHeadlineView(titleNativeAdMob);
+
+                            TextView descNativeAdMob      = (TextView)adView.findViewById(R.id.descNativeAdMob);
+                            adView.setBodyView(descNativeAdMob);
+
+                            TextView ratingNativeAdMob    = (TextView)adView.findViewById(R.id.ratingNativeAdMob);
+                            adView.setStarRatingView(ratingNativeAdMob);
+
+                            TextView sponsoredNativeAdMob = (TextView)adView.findViewById(R.id.sponsoredNativeAdMob);
+                            adView.setAdvertiserView(sponsoredNativeAdMob);
+
+                            TextView ctaNativeAdMob       = (TextView)adView.findViewById(R.id.ctaNativeAdMob);
+                            adView.setCallToActionView(ctaNativeAdMob);
+
+                            ImageView iconNativeAdMob     = (ImageView)adView.findViewById(R.id.iconNativeAdMob);
+                            adView.setIconView(iconNativeAdMob);
+
+                            ImageView mainNativeAdMob     = (ImageView)adView.findViewById(R.id.mainNativeAdMob);
+                            adView.setImageView(mainNativeAdMob);
+
+                            adView.setNativeAd(unifiedNativeAd);
+
+                            frameLayout.removeAllViews();
+                            frameLayout.addView(adView);
+
+                            //=== populate items:
+                            updateNativeText(titleNativeAdMob    , unifiedNativeAd.getHeadline());//textItems.get("title"));
+                            updateNativeText(descNativeAdMob     , unifiedNativeAd.getBody());//textItems.get("desc"));
+                            updateNativeText(ratingNativeAdMob   , String.valueOf(unifiedNativeAd.getStarRating()));
+                            updateNativeText(sponsoredNativeAdMob, unifiedNativeAd.getAdvertiser());
+                            updateNativeText(ctaNativeAdMob      , unifiedNativeAd.getCallToAction());
 
                             com.google.android.gms.ads.formats.NativeAd.Image imgIcon = unifiedNativeAd.getIcon();
                             if (imgIcon!=null)
@@ -1627,7 +1663,7 @@ public class MainActivity extends AppCompatActivity {
                                 Drawable dIcon = imgIcon.getDrawable();
                                 if (dIcon!=null)
                                 {
-                                    updateNativeImage(iconNative, drawableToBitmap(dIcon));
+                                    updateNativeImage(iconNativeAdMob, drawableToBitmap(dIcon));
                                 }
                             }
                             List<com.google.android.gms.ads.formats.NativeAd.Image> lstImages = unifiedNativeAd.getImages();
@@ -1636,7 +1672,7 @@ public class MainActivity extends AppCompatActivity {
                                 Drawable dMain = lstImages.get(0).getDrawable();
                                 if (dMain!=null)
                                 {
-                                    updateNativeImage(mainNative, drawableToBitmap(dMain));
+                                    updateNativeImage(mainNativeAdMob, drawableToBitmap(dMain));
                                 }
                             }
                         }
@@ -1662,6 +1698,42 @@ public class MainActivity extends AppCompatActivity {
                                 break;
                         }
                     }
+
+                    @Override
+                    public void onAdLoaded()
+                    {
+                        ShowToast( "AdMob Native onAdLoaded");
+                    }
+
+                    @Override
+                    public void onAdImpression()
+                    {
+                        ShowToast( "AdMob Native onAdImpression");
+                    }
+
+                    @Override
+                    public void onAdOpened()
+                    {
+                        ShowToast( "AdMob Native onAdOpened");
+                    }
+
+                    @Override
+                    public void onAdClicked()
+                    {
+                        ShowToast( "AdMob Native onAdClicked");
+                    }
+
+                    @Override
+                    public void onAdLeftApplication()
+                    {
+                        ShowToast( "AdMob Native onAdLeftApplication");
+                    }
+
+                    @Override
+                    public void onAdClosed()
+                    {
+                        ShowToast( "AdMob Native onAdClosed");
+                    }
                 })
                 .withNativeAdOptions(new NativeAdOptions.Builder()
                         // Methods in the NativeAdOptions.Builder class can be
@@ -1679,8 +1751,8 @@ public class MainActivity extends AppCompatActivity {
         bundle.putString("r_floor","0.04");
 
         AdRequest adRequestNtive = new AdRequest.Builder()
-//                .addTestDevice("82109714761F90BAAD73679C21E34E56")
-                .addNetworkExtrasBundle(MobFoxAdapter.class, bundle)
+                .addTestDevice("82109714761F90BAAD73679C21E34E56")
+                .addCustomEventExtrasBundle(MobFoxAdapter.class, bundle)
                 .addKeyword("football,basketball")
                 .setLocation(locCurr)
                 .build();

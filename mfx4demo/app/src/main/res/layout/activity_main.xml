@@ -228,6 +228,15 @@
 
     </LinearLayout>
 
+    <FrameLayout android:id="@+id/linAdMobNative"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/linBottomButtons"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        />
+
     <LinearLayout android:id="@+id/linNative"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

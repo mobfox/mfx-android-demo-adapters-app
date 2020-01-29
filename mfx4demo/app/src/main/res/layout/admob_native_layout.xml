@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.gms.ads.formats.UnifiedNativeAdView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <ImageView
+                    android:id="@+id/iconNativeAdMob"
+                    android:layout_width="58dp"
+                    android:layout_height="56dp"
+                    />
+
+                <TextView
+                    android:id="@+id/ratingNativeAdMob"
+                    android:layout_width="58dp"
+                    android:layout_height="wrap_content"
+                    android:text="Rating: 4.5"
+                    android:gravity="center_vertical"
+                    android:textSize="10dp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1.0"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:id="@+id/titleNativeAdMob"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="The title is..."
+                    android:textSize="10dp"
+                    />
+
+                <TextView
+                    android:id="@+id/descNativeAdMob"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="bla bla adasdfasd asd a DA DSA DSA SD "
+                    android:textSize="10dp"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/mainNativeAdMob"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="0dp"
+            />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
+                android:id="@+id/sponsoredNativeAdMob"
+                android:layout_width="212dp"
+                android:layout_height="35dp"
+                android:layout_alignParentLeft="true"
+                android:text="TextView"
+                android:gravity="center_vertical"
+                android:textSize="10dp"
+                />
+
+            <Button
+                android:id="@+id/ctaNativeAdMob"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_alignParentRight="true"
+                android:background="#ffcfcfcf"
+                />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</com.google.android.gms.ads.formats.UnifiedNativeAdView>
