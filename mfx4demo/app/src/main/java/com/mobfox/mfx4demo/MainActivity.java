@@ -871,10 +871,8 @@ public class MainActivity extends AppCompatActivity {
     private static String mopubBannerInvh          = "4ad212b1d0104c5998b288e7a8e35967";    // Android MobFox Adapter / Test Hash Banner(DONT CHANGE)
     private static String mopubBannerLargeInvh     = "bf453fccdfe74af0ab8f6a944d6ae97a";    // Android MobFox Adapter /
     private static String mopubInterstitialInvh    = "3fd85a3e7a9d43ea993360a2536b7bbd";    // Android MobFox Adapter / Test Hash Interstitial(DONT CHANGE)
-    private static String mopubInterVideoInvh      = "562f11d6b8f2499dbd0d1ebfe3c17968";    // Android MobFox Adapter / VIDEO_INTERSTITIAL_HASH (DONT CHANGE)
-    private static String mopubNativeInvh          = "b146b367940a4c6da94e8143fb4b66e4";    // Android MobFox Adapter / AvocarrotNative       e2758ffdaf0d426aa19a633bab6bbc3a Test Hash Native (DONT CHANGE)
-
-    //private static String mopubRewardedInvh        = "562f11d6b8f2499dbd0d1ebfe3c17968";    // Android MobFox Adapter / VIDEO_INTERSTITIAL_HASH (DONT CHANGE)
+    private static String mopubInterVideoInvh      = "6ee6c2cf27074af8a1a7117f8b21b0d9";    // Android MobFox Adapter / Test Hash Inter Video (DONT CHANGE)
+    private static String mopubNativeInvh          = "e2758ffdaf0d426aa19a633bab6bbc3a";    // Android MobFox Adapter / Test Hash Native (DONT CHANGE)
     private static String mopubRewardedInvh        = "005491feb31848a0ae7b9daf4a46c701";    // Android MobFox Adapter / MF Android Rewarded (DONT CHANGE)
 
     // Shimon ads:
