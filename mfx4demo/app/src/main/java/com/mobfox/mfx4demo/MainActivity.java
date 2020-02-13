@@ -525,7 +525,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String MOBFOX_HASH_BANNER_HTML  = "fe96717d9875b9da4339ea5367eff1ec";
     public static final String MOBFOX_HASH_BANNER_VIDEO = "80187188f458cfde788d961b6882fd53";
-    public static final String MOBFOX_HASH_INTER_HTML   = "855f0e6de92f5187d32ed2b86be45d4a";//"267d72ac3f77a3f447b32cf7ebf20673";
+    public static final String MOBFOX_HASH_INTER_HTML   = "267d72ac3f77a3f447b32cf7ebf20673";
     public static final String MOBFOX_HASH_INTER_VIDEO  = "80187188f458cfde788d961b6882fd53";
     public static final String MOBFOX_HASH_NATIVE       = "d8bd50e4ba71a708ad224464bdcdc237";//"a764347547748896b84e0b8ccd90fd62";
 
