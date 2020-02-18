@@ -901,9 +901,8 @@ public class MainActivity extends AppCompatActivity {
         //MobfoxSDK.setCOPPA(true);
 
         mMoPubBannerAd = new MoPubView(this);
-        relBanner.addView(mMoPubBannerAd);
-
         mMoPubBannerAd.setAdUnitId(mopubBannerInvh);
+        mMoPubBannerAd.setAdSize(MoPubView.MoPubAdSize.HEIGHT_50);
         mMoPubBannerAd.setBannerAdListener(new MoPubView.BannerAdListener() {
             @Override
             public void onBannerLoaded(MoPubView banner) {
@@ -945,6 +944,8 @@ public class MainActivity extends AppCompatActivity {
         localExtras.put("keywords"   , "soccer,baseball");
 
         mMoPubBannerAd.setLocalExtras(localExtras);
+
+        relBanner.addView(mMoPubBannerAd);
 
         if (MoPub.isSdkInitialized()) {
             mMoPubBannerAd.loadAd();
