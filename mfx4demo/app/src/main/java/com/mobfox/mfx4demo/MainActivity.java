@@ -873,7 +873,7 @@ public class MainActivity extends AppCompatActivity {
     private static String mopubInterstitialInvh    = "3fd85a3e7a9d43ea993360a2536b7bbd";    // Android MobFox Adapter / Test Hash Interstitial(DONT CHANGE)
     private static String mopubInterVideoInvh      = "6ee6c2cf27074af8a1a7117f8b21b0d9";    // Android MobFox Adapter / Test Hash Inter Video (DONT CHANGE)
     private static String mopubNativeInvh          = "e2758ffdaf0d426aa19a633bab6bbc3a";    // Android MobFox Adapter / Test Hash Native (DONT CHANGE)
-    private static String mopubRewardedInvh        = "005491feb31848a0ae7b9daf4a46c701";    // Android MobFox Adapter / MF Android Rewarded (DONT CHANGE)
+    private static String mopubRewardedInvh        = "005491feb31848a0ae7b9daf4a46c701";    // Android MobFox Adapter / Test Hash Rewarded (DONT CHANGE)
 
     // Shimon ads:
     //private static String mopubBannerInvh          = "2bdfcf59d0f745bea63037b6d89b37d2";
@@ -935,7 +935,7 @@ public class MainActivity extends AppCompatActivity {
         Location locCurr = new Location(LocationManager.GPS_PROVIDER);
         locCurr.setLatitude (32.000000);
         locCurr.setLongitude(35.000000);
-        mMoPubBannerAd.setLocation(locCurr);
+        //mMoPubBannerAd.setLocation(locCurr);
 
         Map<String, Object> localExtras = new HashMap<>();
         localExtras.put("demo_age"   , "23");
@@ -943,7 +943,7 @@ public class MainActivity extends AppCompatActivity {
         localExtras.put("r_floor"    , "0.03");
         localExtras.put("keywords"   , "soccer,baseball");
 
-        mMoPubBannerAd.setLocalExtras(localExtras);
+        //mMoPubBannerAd.setLocalExtras(localExtras);
 
         relBanner.addView(mMoPubBannerAd);
 
@@ -993,6 +993,8 @@ public class MainActivity extends AppCompatActivity {
         });
         mMoPubInterstitialAd.load();
     }
+
+    //===========================================================================================
 
     private void startMoPubRewarded(String hashCode)
     {
@@ -1045,6 +1047,8 @@ public class MainActivity extends AppCompatActivity {
 
         MoPubRewardedVideos.loadRewardedVideo(hashCode);
     }
+
+    //===========================================================================================
 
     private void startMoPubNative()
     {
