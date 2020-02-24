@@ -82,12 +82,11 @@ public class MainActivity extends AppCompatActivity {
 
     //creating variables for our layout
     private LinearLayout    linNative;
-    private ImageView iconNative, mainNative;
-    private TextView titleNative, descNative, ratingNative, sponsoredNative;
-    private Button ctaNative;
+    private ImageView       iconNative, mainNative;
+    private TextView        titleNative, descNative, ratingNative, sponsoredNative;
+    private Button          ctaNative;
 
     private CheckBox        btnUseLiveAds;
-    private CheckBox        btnPicsartMode;
 
     private Button          btnBannerSmall;
     private Button          btnBannerLarge;
@@ -265,6 +264,8 @@ public class MainActivity extends AppCompatActivity {
         ((ImageView)findViewById(R.id.imgMoPub )).setBackgroundResource((mAdapterType==ADAPTER_TYPE_MOPUB )?R.drawable.mopub_logo :R.drawable.mopub_logo_grey);
         ((ImageView)findViewById(R.id.imgAdMob )).setBackgroundResource((mAdapterType==ADAPTER_TYPE_ADMOB )?R.drawable.admob_logo :R.drawable.admob_logo_grey);
 
+        btnUseLiveAds.setEnabled(mAdapterType==ADAPTER_TYPE_MOBFOX);
+
         switch (mAdapterType)
         {
             case ADAPTER_TYPE_MOBFOX:
@@ -310,23 +311,12 @@ public class MainActivity extends AppCompatActivity {
                 UpdateConfigButtons();
             }
         });
-
-        btnPicsartMode = (CheckBox)findViewById(R.id.btnPicsartMode);
-        btnPicsartMode.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                MFXStorage.sharedInstance(MainActivity.this).setPrefBool("MFX4Demo_do_like_picsart",isChecked);
-                clearAllAds();
-                UpdateConfigButtons();
-            }
-        });
         UpdateConfigButtons();
     }
 
     private void UpdateConfigButtons()
     {
         btnUseLiveAds.setChecked(MFXStorage.sharedInstance(this).getPrefBool("MFX4Demo_use_live_ads",false));
-        btnPicsartMode.setChecked(MFXStorage.sharedInstance(this).getPrefBool("MFX4Demo_do_like_picsart",false));
     }
 
     //===========================================================================================
@@ -896,6 +886,8 @@ public class MainActivity extends AppCompatActivity {
     {
         final Context c = this;
 
+        clearAllAds();
+
         MobfoxSDK.init(c);
 
         //MobfoxSDK.setCOPPA(true);
@@ -958,6 +950,8 @@ public class MainActivity extends AppCompatActivity {
     {
         final Context c = this;
 
+        clearAllAds();
+
         mMoPubInterstitialAd = new MoPubInterstitial(self,hashCode);
         mMoPubInterstitialAd.setInterstitialAdListener(new MoPubInterstitial.InterstitialAdListener() {
             @Override
@@ -999,6 +993,8 @@ public class MainActivity extends AppCompatActivity {
     private void startMoPubRewarded(String hashCode)
     {
         final Context c = this;
+
+        clearAllAds();
 
         MoPubRewardedVideos.setRewardedVideoListener(new MoPubRewardedVideoListener() {
             @Override
@@ -1052,7 +1048,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void startMoPubNative()
     {
-        clearMoPubNative();
+        clearAllAds();
 
         ViewBinder mMoPubViewBinder = new ViewBinder.Builder(R.layout.mopub_native_layout)
                 .mainImageId(R.id.mainNative)
@@ -1148,164 +1144,10 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onInitializationFinished() {
                     Log.d("MobfoxSDK", "MoPub SDK init");
-
-                    if (MFXStorage.sharedInstance(c).getPrefBool("MFX4Demo_do_like_picsart",false))
-                    {
-                        DoLikePicsart();
-                    }
                 }
             });
         }
     }
-
-    //###########################################################################################
-    //###########################################################################################
-    //#####                                                                                 #####
-    //#####   P i c s a r t                                                                 #####
-    //#####                                                                                 #####
-    //###########################################################################################
-    //###########################################################################################
-
-    private static String mopubBannerPicsartInvh       = "49ace665424e41138d1ffe34780f6971";//"4ad212b1d0104c5998b288e7a8e35967";
-    private static String mopubInterstitialPicsartInvh = "1932d720d19c4c2ca96fce403e373e46";//"3fd85a3e7a9d43ea993360a2536b7bbd";
-
-    private MoPubView         mMoPubBannerAd1       = null;
-    private MoPubInterstitial mMoPubInterstitialAd1 = null;
-    private MoPubInterstitial mMoPubInterstitialAd2 = null;
-
-    private void DoLikePicsart()
-    {
-        final Context c = this;
-
-        // ===== first interstitial: =====================================
-        mMoPubInterstitialAd1 = new MoPubInterstitial(self,mopubInterstitialPicsartInvh);
-        mMoPubInterstitialAd1.setInterstitialAdListener(new MoPubInterstitial.InterstitialAdListener() {
-            @Override
-            public void onInterstitialLoaded(MoPubInterstitial interstitial) {
-                ShowToast( "Picsart interstitial loaded");
-                if (interstitial.isReady()) {
-                    //@@@mMoPubInterstitialAd1.show();
-                } else {
-                    ShowToast( "Picsart interstitial is not ready yet !");
-                }
-            }
-
-            @Override
-            public void onInterstitialFailed(MoPubInterstitial interstitial, MoPubErrorCode errorCode) {
-                ShowToast( "Picsart interstitial load failed: " + errorCode);
-            }
-
-            @Override
-            public void onInterstitialShown(MoPubInterstitial interstitial) {
-                ShowToast( "Picsart interstitial shown");
-            }
-
-            @Override
-            public void onInterstitialClicked(MoPubInterstitial interstitial) {
-                ShowToast( "Picsart interstitial clicked");
-            }
-
-            @Override
-            public void onInterstitialDismissed(MoPubInterstitial interstitial) {
-                ShowToast( "Picsart interstitial dismissed");
-                interstitial.destroy();
-            }
-        });
-        mMoPubInterstitialAd1.load();
-
-        // ===== second interstitial: =====================================
-
-        /*
-        mMoPubInterstitialAd2 = new MoPubInterstitial(self,mopubInterstitialPicsartInvh);
-        mMoPubInterstitialAd2.setInterstitialAdListener(new MoPubInterstitial.InterstitialAdListener() {
-            @Override
-            public void onInterstitialLoaded(MoPubInterstitial interstitial) {
-                ShowToast( "Picsart interstitial2 loaded");
-                if (interstitial.isReady()) {
-                    //@@@mMoPubInterstitialAd2.show();
-                } else {
-                    ShowToast( "Picsart interstitial2 is not ready yet !");
-                }
-            }
-
-            @Override
-            public void onInterstitialFailed(MoPubInterstitial interstitial, MoPubErrorCode errorCode) {
-                ShowToast( "Picsart interstitial2 load failed: " + errorCode);
-            }
-
-            @Override
-            public void onInterstitialShown(MoPubInterstitial interstitial) {
-                ShowToast( "Picsart interstitial2 shown");
-            }
-
-            @Override
-            public void onInterstitialClicked(MoPubInterstitial interstitial) {
-                ShowToast( "Picsart interstitial2 clicked");
-            }
-
-            @Override
-            public void onInterstitialDismissed(MoPubInterstitial interstitial) {
-                ShowToast( "Picsart interstitial2 dismissed");
-                interstitial.destroy();
-            }
-        });
-        mMoPubInterstitialAd2.load();
-        */
-        // ===== first banner: =====================================
-
-        mMoPubBannerAd1 = new MoPubView(this);
-        //@@@relBanner.addView(mMoPubBannerAd1);
-
-        mMoPubBannerAd1.setAdUnitId(mopubBannerPicsartInvh);
-        mMoPubBannerAd1.setBannerAdListener(new MoPubView.BannerAdListener() {
-            @Override
-            public void onBannerLoaded(MoPubView banner) {
-                ShowToast( "Picsart Banner loaded");
-            }
-
-            @Override
-            public void onBannerFailed(MoPubView banner, MoPubErrorCode errorCode) {
-                ShowToast( "Picsart Banner failed");
-                banner.destroy();
-            }
-
-            @Override
-            public void onBannerClicked(MoPubView banner) {
-                ShowToast( "Picsart Banner clicked");
-            }
-
-            @Override
-            public void onBannerExpanded(MoPubView banner) {
-                ShowToast( "Picsart Banner expanded");
-            }
-
-            @Override
-            public void onBannerCollapsed(MoPubView banner) {
-                ShowToast( "Picsart Banner collapsed");
-                banner.destroy();
-            }
-        });
-
-        /*
-        Location locCurr = new Location(LocationManager.GPS_PROVIDER);
-        locCurr.setLatitude (32.000000);
-        locCurr.setLongitude(35.000000);
-        mMoPubBannerAd1.setLocation(locCurr);
-
-        Map<String, Object> localExtras = new HashMap<>();
-        localExtras.put("demo_age"   , "23");
-        localExtras.put("demo_gender", "female");
-        localExtras.put("r_floor"    , "0.03");
-        localExtras.put("keywords"   , "soccer,baseball");
-
-        mMoPubBannerAd1.setLocalExtras(localExtras);
-        */
-
-        if (MoPub.isSdkInitialized()) {
-            mMoPubBannerAd1.loadAd();
-        }
-    }
-
 
     //###########################################################################################
     //###########################################################################################
@@ -1364,7 +1206,7 @@ public class MainActivity extends AppCompatActivity {
     {
         final Context c = this;
 
-        clearAdMobBanner();
+        clearAllAds();
 
         mAdMobBannerView = new AdView(this);
         mAdMobBannerView.setAdSize(adSize);
@@ -1450,7 +1292,7 @@ public class MainActivity extends AppCompatActivity {
     {
         final Context c = this;
 
-        clearAdMobInterstitial();
+        clearAllAds();
 
         mAdMobInterstitialAd = new InterstitialAd(self);
         mAdMobInterstitialAd.setAdUnitId(invh);
@@ -1520,7 +1362,7 @@ public class MainActivity extends AppCompatActivity {
     {
         final Context c = this;
 
-        clearAdMobRewarded();
+        clearAllAds();
 
         mAdMobRewardedAd = new RewardedAd(self, invh);
 
@@ -1605,7 +1447,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void startAdMobNative()
     {
-        clearAdMobNative();
+        clearAllAds();
 
         final Context c = this;
 
@@ -1806,6 +1648,12 @@ public class MainActivity extends AppCompatActivity {
     private void clearAdMobNative()
     {
         // mytodo:
+        FrameLayout frameLayout = findViewById(R.id.linAdMobNative);
+        frameLayout.removeAllViews();
+        if (mAdMobNativeAdLoader!=null)
+        {
+            mAdMobNativeAdLoader = null;
+        }
     }
 
     //===========================================================================================

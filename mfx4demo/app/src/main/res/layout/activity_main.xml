@@ -151,15 +151,6 @@
             android:textAllCaps="false"
             />
 
-        <CheckBox android:id="@+id/btnPicsartMode"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="20dp"
-            android:text="Allocate ads on app launch"
-            android:textSize="13dp"
-            android:textAllCaps="false"
-            />
-
     </LinearLayout>
 
     <View android:id="@+id/sep2"
