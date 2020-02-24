@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
         ((ImageView)findViewById(R.id.imgMoPub )).setBackgroundResource((mAdapterType==ADAPTER_TYPE_MOPUB )?R.drawable.mopub_logo :R.drawable.mopub_logo_grey);
         ((ImageView)findViewById(R.id.imgAdMob )).setBackgroundResource((mAdapterType==ADAPTER_TYPE_ADMOB )?R.drawable.admob_logo :R.drawable.admob_logo_grey);
 
-        btnUseLiveAds.setEnabled(mAdapterType==ADAPTER_TYPE_MOBFOX);
+        btnUseLiveAds.setVisibility((mAdapterType==ADAPTER_TYPE_MOBFOX)?View.VISIBLE:View.GONE);
 
         switch (mAdapterType)
         {

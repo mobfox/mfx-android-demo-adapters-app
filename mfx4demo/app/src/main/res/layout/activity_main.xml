@@ -9,9 +9,9 @@
     <LinearLayout android:id="@+id/linBannerButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
         android:orientation="horizontal"
         >
 
@@ -19,7 +19,7 @@
             android:id="@+id/btnBannerSmall"
             android:layout_width="0dp"
             android:layout_weight="1.0"
-            android:layout_height="40dp"
+            android:layout_height="36dp"
             android:background="#ffcfcfcf"
             android:text="Banner 320x50"
             android:textSize="13dp"
@@ -30,8 +30,8 @@
             android:id="@+id/btnBannerLarge"
             android:layout_width="0dp"
             android:layout_weight="1.0"
-            android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="4dp"
             android:background="#ffcfcfcf"
             android:text="Banner 300x250"
             android:textSize="13dp"
@@ -42,8 +42,8 @@
             android:id="@+id/btnBannerVideo"
             android:layout_width="0dp"
             android:layout_weight="1.0"
-            android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="4dp"
             android:background="#ffcfcfcf"
             android:text="Video Banner"
             android:textSize="13dp"
@@ -55,7 +55,7 @@
     <LinearLayout android:id="@+id/banner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="4dp"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/linBannerButtons"
         android:orientation="vertical"
@@ -68,8 +68,8 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
         android:orientation="horizontal"
         >
 
@@ -134,39 +134,13 @@
         android:background="#ffcfcfcf"
         />
 
-    <LinearLayout android:id="@+id/linConfigButtons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/sep1"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:orientation="horizontal"
-        >
-
-        <CheckBox android:id="@+id/btnUseLiveAds"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Use LIVE ads"
-            android:textSize="13dp"
-            android:textAllCaps="false"
-            />
-
-    </LinearLayout>
-
-    <View android:id="@+id/sep2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_above="@+id/linConfigButtons"
-        android:background="#ffcfcfcf"
-        />
-
     <LinearLayout android:id="@+id/linBottomButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/sep2"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_above="@+id/sep1"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
         android:orientation="horizontal"
         >
 
@@ -174,7 +148,7 @@
             android:id="@+id/btnInterstitialHtml"
             android:layout_width="0dp"
             android:layout_weight="1.0"
-            android:layout_height="40dp"
+            android:layout_height="36dp"
             android:background="#ffcfcfcf"
             android:text="Interstitial"
             android:textSize="13dp"
@@ -185,8 +159,8 @@
             android:id="@+id/btnInterstitialVideo"
             android:layout_width="0dp"
             android:layout_weight="1.0"
-            android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="4dp"
             android:background="#ffcfcfcf"
             android:text="Video"
             android:textSize="13dp"
@@ -197,8 +171,8 @@
             android:id="@+id/btnRewarded"
             android:layout_width="0dp"
             android:layout_weight="1.0"
-            android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="4dp"
             android:background="#ffcfcfcf"
             android:text="Rewarded"
             android:textSize="12dp"
@@ -209,8 +183,8 @@
             android:id="@+id/btnNative"
             android:layout_width="0dp"
             android:layout_weight="1.0"
-            android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="4dp"
             android:background="#ffcfcfcf"
             android:text="Native"
             android:textSize="13dp"
@@ -219,22 +193,33 @@
 
     </LinearLayout>
 
+    <CheckBox android:id="@+id/btnUseLiveAds"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/linBottomButtons"
+        android:layout_marginBottom="1dp"
+        android:layout_marginLeft="4dp"
+        android:text="Use LIVE ads"
+        android:textSize="13dp"
+        android:textAllCaps="false"
+        />
+
     <FrameLayout android:id="@+id/linAdMobNative"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/linBottomButtons"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
         />
 
     <LinearLayout android:id="@+id/linNative"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/linBottomButtons"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
         android:orientation="vertical"
         >
 
@@ -314,7 +299,7 @@
                 android:layout_height="35dp"
                 android:layout_alignParentLeft="true"
                 android:text="TextView"
-                android:gravity="center_vertical"
+                android:gravity="top"
                 android:textSize="10dp"
                 />
 
