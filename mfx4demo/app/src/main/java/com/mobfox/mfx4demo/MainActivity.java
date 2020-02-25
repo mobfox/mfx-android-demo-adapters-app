@@ -279,8 +279,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case ADAPTER_TYPE_MOPUB:
                 btnBannerSmall.setEnabled      (true);
-                btnBannerLarge.setEnabled      (false);
-                btnBannerVideo.setEnabled      (false);
+                btnBannerLarge.setEnabled      (true);
+                btnBannerVideo.setEnabled      (true);
                 btnInterstitialHtml.setEnabled (true);
                 btnInterstitialVideo.setEnabled(true);
                 btnRewarded.setEnabled         (true);
@@ -289,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
             case ADAPTER_TYPE_ADMOB:
                 btnBannerSmall.setEnabled      (true);
                 btnBannerLarge.setEnabled      (true);
-                btnBannerVideo.setEnabled      (false);
+                btnBannerVideo.setEnabled      (true);
                 btnInterstitialHtml.setEnabled (true);
                 btnInterstitialVideo.setEnabled(true);
                 btnRewarded.setEnabled         (true);
@@ -356,7 +356,7 @@ public class MainActivity extends AppCompatActivity {
                         startMobFoxLargeBanner();
                         break;
                     case ADAPTER_TYPE_MOPUB:
-                        // NOP
+                        startMoPubLargeBanner();
                         break;
                     case ADAPTER_TYPE_ADMOB:
                         startAdMobLargeBanner();
@@ -377,10 +377,10 @@ public class MainActivity extends AppCompatActivity {
                         startMobFoxVideoBanner();
                         break;
                     case ADAPTER_TYPE_MOPUB:
-                        // NOP
+                        startMoPubVideoBanner();
                         break;
                     case ADAPTER_TYPE_ADMOB:
-                        // NOP
+                        startAdMobVideoBanner();
                         break;
                 }
             }
@@ -859,20 +859,12 @@ public class MainActivity extends AppCompatActivity {
     //###########################################################################################
 
     private static String mopubBannerInvh          = "4ad212b1d0104c5998b288e7a8e35967";    // Android MobFox Adapter / Test Hash Banner(DONT CHANGE)
-    private static String mopubBannerLargeInvh     = "bf453fccdfe74af0ab8f6a944d6ae97a";    // Android MobFox Adapter /
+    private static String mopubBannerLargeInvh     = "9cae0a5af35c4a96b033a67f4b49160c";    // Android MobFox Adapter / Test Hash Large Banner(DONT CHANGE)
+    private static String mopubBannerVideoInvh     = "ce377e29b9e94ca484efbbf8201f7e36";    // Android MobFox Adapter / Test Hash Video Banner(DONT CHANGE)
     private static String mopubInterstitialInvh    = "3fd85a3e7a9d43ea993360a2536b7bbd";    // Android MobFox Adapter / Test Hash Interstitial(DONT CHANGE)
     private static String mopubInterVideoInvh      = "6ee6c2cf27074af8a1a7117f8b21b0d9";    // Android MobFox Adapter / Test Hash Inter Video (DONT CHANGE)
     private static String mopubNativeInvh          = "e2758ffdaf0d426aa19a633bab6bbc3a";    // Android MobFox Adapter / Test Hash Native (DONT CHANGE)
     private static String mopubRewardedInvh        = "005491feb31848a0ae7b9daf4a46c701";    // Android MobFox Adapter / Test Hash Rewarded (DONT CHANGE)
-
-    // Shimon ads:
-    //private static String mopubBannerInvh          = "2bdfcf59d0f745bea63037b6d89b37d2";
-    //private static String mopubBannerLargeInvh     = "949b36a9c6ac4a6799eb66f9f5dd41c1";
-    //private static String mopubBannerVideoInvh     = "f63925f72d45427ea12e46d273b95d62";
-    //private static String mopubInterstitialInvh    = "ce91a23450a74b2dab5af65ca6de51d1";
-    //private static String mopubInterVideoInvh      = "99d11abd6e7a4b5297445df8d6f7371c";
-    //private static String mopubNativeInvh          = "841e63ae8a3c42b6a4d692689ef33341";
-    //private static String mopubRewardedInvh        = "cd6b6088edfd4e51971eb739e57c6b68";
 
     private MoPubView         mMoPubBannerAd       = null;
     private MoPubInterstitial mMoPubInterstitialAd = null;
@@ -895,6 +887,134 @@ public class MainActivity extends AppCompatActivity {
         mMoPubBannerAd = new MoPubView(this);
         mMoPubBannerAd.setAdUnitId(mopubBannerInvh);
         mMoPubBannerAd.setAdSize(MoPubView.MoPubAdSize.HEIGHT_50);
+        mMoPubBannerAd.setBannerAdListener(new MoPubView.BannerAdListener() {
+            @Override
+            public void onBannerLoaded(MoPubView banner) {
+                ShowToast( "MoPub Banner loaded");
+            }
+
+            @Override
+            public void onBannerFailed(MoPubView banner, MoPubErrorCode errorCode) {
+                ShowToast( "MoPub Banner failed");
+                banner.destroy();
+            }
+
+            @Override
+            public void onBannerClicked(MoPubView banner) {
+                ShowToast( "MoPub Banner clicked");
+            }
+
+            @Override
+            public void onBannerExpanded(MoPubView banner) {
+                ShowToast( "MoPub Banner expanded");
+            }
+
+            @Override
+            public void onBannerCollapsed(MoPubView banner) {
+                ShowToast( "MoPub Banner collapsed");
+                banner.destroy();
+            }
+        });
+
+        Location locCurr = new Location(LocationManager.GPS_PROVIDER);
+        locCurr.setLatitude (32.000000);
+        locCurr.setLongitude(35.000000);
+        //mMoPubBannerAd.setLocation(locCurr);
+
+        Map<String, Object> localExtras = new HashMap<>();
+        localExtras.put("demo_age"   , "23");
+        localExtras.put("demo_gender", "female");
+        localExtras.put("r_floor"    , "0.03");
+        localExtras.put("keywords"   , "soccer,baseball");
+
+        //mMoPubBannerAd.setLocalExtras(localExtras);
+
+        relBanner.addView(mMoPubBannerAd);
+
+        if (MoPub.isSdkInitialized()) {
+            mMoPubBannerAd.loadAd();
+        }
+    }
+
+    //===========================================================================================
+
+    private void startMoPubLargeBanner()
+    {
+        final Context c = this;
+
+        clearAllAds();
+
+        MobfoxSDK.init(c);
+
+        //MobfoxSDK.setCOPPA(true);
+
+        mMoPubBannerAd = new MoPubView(this);
+        mMoPubBannerAd.setAdUnitId(mopubBannerLargeInvh);
+        mMoPubBannerAd.setAdSize(MoPubView.MoPubAdSize.HEIGHT_250);
+        mMoPubBannerAd.setBannerAdListener(new MoPubView.BannerAdListener() {
+            @Override
+            public void onBannerLoaded(MoPubView banner) {
+                ShowToast( "MoPub Banner loaded");
+            }
+
+            @Override
+            public void onBannerFailed(MoPubView banner, MoPubErrorCode errorCode) {
+                ShowToast( "MoPub Banner failed");
+                banner.destroy();
+            }
+
+            @Override
+            public void onBannerClicked(MoPubView banner) {
+                ShowToast( "MoPub Banner clicked");
+            }
+
+            @Override
+            public void onBannerExpanded(MoPubView banner) {
+                ShowToast( "MoPub Banner expanded");
+            }
+
+            @Override
+            public void onBannerCollapsed(MoPubView banner) {
+                ShowToast( "MoPub Banner collapsed");
+                banner.destroy();
+            }
+        });
+
+        Location locCurr = new Location(LocationManager.GPS_PROVIDER);
+        locCurr.setLatitude (32.000000);
+        locCurr.setLongitude(35.000000);
+        //mMoPubBannerAd.setLocation(locCurr);
+
+        Map<String, Object> localExtras = new HashMap<>();
+        localExtras.put("demo_age"   , "23");
+        localExtras.put("demo_gender", "female");
+        localExtras.put("r_floor"    , "0.03");
+        localExtras.put("keywords"   , "soccer,baseball");
+
+        //mMoPubBannerAd.setLocalExtras(localExtras);
+
+        relBanner.addView(mMoPubBannerAd);
+
+        if (MoPub.isSdkInitialized()) {
+            mMoPubBannerAd.loadAd();
+        }
+    }
+
+    //===========================================================================================
+
+    private void startMoPubVideoBanner()
+    {
+        final Context c = this;
+
+        clearAllAds();
+
+        MobfoxSDK.init(c);
+
+        //MobfoxSDK.setCOPPA(true);
+
+        mMoPubBannerAd = new MoPubView(this);
+        mMoPubBannerAd.setAdUnitId(mopubBannerVideoInvh);
+        mMoPubBannerAd.setAdSize(MoPubView.MoPubAdSize.HEIGHT_250);
         mMoPubBannerAd.setBannerAdListener(new MoPubView.BannerAdListener() {
             @Override
             public void onBannerLoaded(MoPubView banner) {
@@ -1162,6 +1282,8 @@ public class MainActivity extends AppCompatActivity {
     //private static String   admobBannerInvh       = "ca-app-pub-6224828323195096/4723665370";
     //private static String   admobBannerInvh       = "ca-app-pub-6224828323195096/7573529306";   // com.lyrebirdstudio.colorizer.lite
 
+    private static String   admobBannerVideoInvh    = "ca-app-pub-6224828323195096/9231617215";   // sdk.mobfox.com.appcore
+
     private static String   admobInterstitialInvh = "ca-app-pub-8111915318550857/9385420926";   // sdk.mobfox.com.appcore
     //private static String   admobInterstitialInvh = "ca-app-pub-6224828323195096/1031427961";
     //private static String   admobInterstitialInvh = "ca-app-pub-6224828323195096/3716389562";
@@ -1211,6 +1333,92 @@ public class MainActivity extends AppCompatActivity {
         mAdMobBannerView = new AdView(this);
         mAdMobBannerView.setAdSize(adSize);
         mAdMobBannerView.setAdUnitId(admobBannerInvh);
+
+        mAdMobBannerView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                ShowToast( "AdMob Banner loaded");
+                Log.d("MobfoxSDK", "AdMob Banner loaded");
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+                switch (errorCode)
+                {
+                    case ERROR_CODE_INTERNAL_ERROR:
+                        ShowToast( "AdMob Banner failed (INTERNAL_ERROR)");
+                        break;
+                    case ERROR_CODE_INVALID_REQUEST:
+                        ShowToast( "AdMob Banner failed (INVALID_REQUEST)");
+                        break;
+                    case ERROR_CODE_NETWORK_ERROR:
+                        ShowToast( "AdMob Banner failed (NETWORK_ERROR)");
+                        break;
+                    case ERROR_CODE_NO_FILL:
+                        ShowToast( "AdMob Banner failed (NO_FILL)");
+                        break;
+                }
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+                ShowToast( "AdMob Banner opened");
+            }
+
+            @Override
+            public void onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+                ShowToast( "AdMob Banner clicked");
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+                ShowToast( "AdMob Banner left app");
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when the user is about to return
+                // to the app after tapping on an ad.
+                ShowToast( "AdMob Banner closed");
+            }
+        });
+
+
+        Location locCurr = new Location(LocationManager.GPS_PROVIDER);
+        locCurr.setLatitude (32.009876);
+        locCurr.setLongitude(35.006789);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("demo_age","24");
+        bundle.putString("demo_gender","male");
+        bundle.putString("r_floor","0.04");
+
+
+        AdRequest adRequest = new AdRequest.Builder()
+                .addNetworkExtrasBundle(MobFoxAdapter.class, bundle)
+                .addKeyword("football,basketball")
+                .setLocation(locCurr)
+                .build();
+        mAdMobBannerView.loadAd(adRequest);
+
+        relBanner.addView(mAdMobBannerView);
+    }
+
+    private void startAdMobVideoBanner()
+    {
+        final Context c = this;
+
+        clearAllAds();
+
+        mAdMobBannerView = new AdView(this);
+        mAdMobBannerView.setAdSize(AdSize.MEDIUM_RECTANGLE);
+        mAdMobBannerView.setAdUnitId(admobBannerVideoInvh);
 
         mAdMobBannerView.setAdListener(new AdListener() {
             @Override
