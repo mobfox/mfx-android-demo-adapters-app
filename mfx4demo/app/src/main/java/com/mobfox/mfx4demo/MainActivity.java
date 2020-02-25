@@ -264,7 +264,8 @@ public class MainActivity extends AppCompatActivity {
         ((ImageView)findViewById(R.id.imgMoPub )).setBackgroundResource((mAdapterType==ADAPTER_TYPE_MOPUB )?R.drawable.mopub_logo :R.drawable.mopub_logo_grey);
         ((ImageView)findViewById(R.id.imgAdMob )).setBackgroundResource((mAdapterType==ADAPTER_TYPE_ADMOB )?R.drawable.admob_logo :R.drawable.admob_logo_grey);
 
-        btnUseLiveAds.setVisibility((mAdapterType==ADAPTER_TYPE_MOBFOX)?View.VISIBLE:View.GONE);
+        //btnUseLiveAds.setVisibility((mAdapterType==ADAPTER_TYPE_MOBFOX)?View.VISIBLE:View.GONE);
+        btnUseLiveAds.setVisibility(View.GONE);
 
         switch (mAdapterType)
         {
@@ -306,7 +307,7 @@ public class MainActivity extends AppCompatActivity {
         btnUseLiveAds.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                MFXStorage.sharedInstance(MainActivity.this).setPrefBool("MFX4Demo_use_live_ads",isChecked);
+                MFXStorage.sharedInstance(MainActivity.this).setPrefBool("MFX4Demo_use_live_ads1",isChecked);
                 clearAllAds();
                 UpdateConfigButtons();
             }
@@ -316,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void UpdateConfigButtons()
     {
-        btnUseLiveAds.setChecked(MFXStorage.sharedInstance(this).getPrefBool("MFX4Demo_use_live_ads",false));
+        btnUseLiveAds.setChecked(MFXStorage.sharedInstance(this).getPrefBool("MFX4Demo_use_live_ads1",false));
     }
 
     //===========================================================================================
@@ -539,7 +540,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String MobfoxHashBannerHtml()
     {
-        if (!MFXStorage.sharedInstance(this).getPrefBool("MFX4Demo_use_live_ads",false))
+        if (!MFXStorage.sharedInstance(this).getPrefBool("MFX4Demo_use_live_ads1",false))
         {
             return MOBFOX_HASH_BANNER_HTML;
         } else {
@@ -549,7 +550,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String MobfoxHashBannerVideo()
     {
-        if (!MFXStorage.sharedInstance(this).getPrefBool("MFX4Demo_use_live_ads",false))
+        if (!MFXStorage.sharedInstance(this).getPrefBool("MFX4Demo_use_live_ads1",false))
         {
             return MOBFOX_HASH_BANNER_VIDEO;
         } else {
@@ -559,7 +560,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String MobfoxHashInterHtml()
     {
-        if (!MFXStorage.sharedInstance(this).getPrefBool("MFX4Demo_use_live_ads",false))
+        if (!MFXStorage.sharedInstance(this).getPrefBool("MFX4Demo_use_live_ads1",false))
         {
             return MOBFOX_HASH_INTER_HTML;
         } else {
@@ -569,7 +570,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String MobfoxHashInterVideo()
     {
-        if (!MFXStorage.sharedInstance(this).getPrefBool("MFX4Demo_use_live_ads",false))
+        if (!MFXStorage.sharedInstance(this).getPrefBool("MFX4Demo_use_live_ads1",false))
         {
             return MOBFOX_HASH_INTER_VIDEO;
         } else {
@@ -579,7 +580,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String MobfoxHashNative()
     {
-        if (!MFXStorage.sharedInstance(this).getPrefBool("MFX4Demo_use_live_ads",false))
+        if (!MFXStorage.sharedInstance(this).getPrefBool("MFX4Demo_use_live_ads1",false))
         {
             return MOBFOX_HASH_NATIVE;
         } else {
