@@ -33,14 +33,6 @@
             android:name="com.mobfox.android.dmp.services.MobFoxService"
             android:launchMode="singleTop" /> <!-- new service -->
 
-        <!-- MobfoxSDK: needed for displaying interstitial -->
-        <activity
-            android:name="com.mobfox.android.Ads.InterstitialActivity"
-            android:hardwareAccelerated="true"
-            android:configChanges="orientation|screenSize"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-            />
-
         <!-- MobfoxSDK: needed for displaying internal browser -->
         <activity
             android:name="com.mobfox.android.core.InAppBrowser"

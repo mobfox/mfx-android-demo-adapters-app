@@ -184,6 +184,18 @@ public class MainActivity extends AppCompatActivity {
         MobfoxSDK.onDestroy(this);
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        if (MobfoxSDK.onBackPressed(this))
+        {
+            return;
+        }
+
+        super.onBackPressed();
+        MoPub.onBackPressed(this);
+    }
+
     //===========================================================================================
 
     private void ShowToast(String text)
